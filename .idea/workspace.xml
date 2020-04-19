@@ -1,21 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="justPlayer" targetName="justPlayer" />
+    </generated>
+  </component>
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
     </configurations>
   </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e4a588b1-cb05-4309-9a1b-28c137fd1ac9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.SET_LOCAL_PATH.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/VideoGrabber.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/VideoGrabber.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/DependInfo.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/build.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/cmake_clean.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/depend.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/flags.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/link.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/progress.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/progress.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/justPlayer.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/justPlayer.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1aiC8gua7o5KEbAyooSqds0vEj0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
     <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
   <component name="RunManager">
-    <configuration name="justPlayer" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="justPlayer" TARGET_NAME="justPlayer" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="justPlayer" RUN_TARGET_NAME="justPlayer">
+    <configuration name="justPlayer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="justPlayer" TARGET_NAME="justPlayer" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="justPlayer" RUN_TARGET_NAME="justPlayer">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e4a588b1-cb05-4309-9a1b-28c137fd1ac9" name="Default Changelist" comment="" />
+      <created>1587208869591</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587208869591</updated>
+      <workItem from="1587208871842" duration="1170000" />
+      <workItem from="1587263917327" duration="8215000" />
+      <workItem from="1587301026212" duration="206000" />
+      <workItem from="1587301292847" duration="4676000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1564" height="272" key="GridCell.Tab.0.bottom" timestamp="1587308781370">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="272" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308781370" />
+    <state width="1564" height="272" key="GridCell.Tab.0.center" timestamp="1587308781369">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="272" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308781369" />
+    <state width="1564" height="272" key="GridCell.Tab.0.left" timestamp="1587308781369">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="272" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308781369" />
+    <state width="1564" height="272" key="GridCell.Tab.0.right" timestamp="1587308781370">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="272" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308781370" />
+    <state width="1564" height="336" key="GridCell.Tab.1.bottom" timestamp="1587308389933">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="336" key="GridCell.Tab.1.bottom/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308389933" />
+    <state width="1564" height="336" key="GridCell.Tab.1.bottom/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587308302027" />
+    <state width="1564" height="336" key="GridCell.Tab.1.center" timestamp="1587308389932">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="336" key="GridCell.Tab.1.center/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308389932" />
+    <state width="1564" height="336" key="GridCell.Tab.1.center/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587308302026" />
+    <state width="1564" height="336" key="GridCell.Tab.1.left" timestamp="1587308389932">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="336" key="GridCell.Tab.1.left/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308389932" />
+    <state width="1564" height="336" key="GridCell.Tab.1.left/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587308302025" />
+    <state width="1564" height="336" key="GridCell.Tab.1.right" timestamp="1587308389932">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state width="1564" height="336" key="GridCell.Tab.1.right/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308389932" />
+    <state width="1564" height="336" key="GridCell.Tab.1.right/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587308302026" />
+    <state x="341" y="175" key="SettingsEditor" timestamp="1587296786071">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="341" y="175" key="SettingsEditor/0.1050.1680.945/0.23.1680.1027@0.23.1680.1027" timestamp="1587296786071" />
+    <state x="498" y="1326" width="683" height="546" key="find.popup" timestamp="1587308943163">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state x="498" y="1326" width="683" height="546" key="find.popup/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587308943163" />
+    <state x="498" y="293" width="683" height="486" key="find.popup/0.1050.1680.945/0.23.1680.1027@0.23.1680.1027" timestamp="1587288072381" />
+    <state x="587" y="1384" key="refactoring.ChangeSignatureDialog" timestamp="1587307826348">
+      <screen x="0" y="1050" width="1680" height="1050" />
+    </state>
+    <state x="587" y="1384" key="refactoring.ChangeSignatureDialog/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587307826348" />
   </component>
 </project>

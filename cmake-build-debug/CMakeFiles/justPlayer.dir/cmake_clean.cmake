@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/justPlayer.dir/VideoGrabber.cpp.o"
   "CMakeFiles/justPlayer.dir/main.cpp.o"
   "justPlayer"
   "justPlayer.pdb"

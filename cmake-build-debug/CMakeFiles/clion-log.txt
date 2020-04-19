@@ -13,6 +13,44 @@
 -- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
+CMAKE_SOURCE_DIR=/Users/hewro/Documents/work/bupt/study/justPlayer
+PROJECT_SOURCE_DIR=/Users/hewro/Documents/work/bupt/study/justPlayer
+--------------------
+CMAKE_INCLUDE_PATH=
+CMAKE_LIBRARY_PATH=
+CMAKE_PREFIX_PATH=
+--------------------
+FFMPEG INFORMATION
+--------------------
+AVCODEC_INCLUDE_DIR=/usr/local/include
+AVCODEC_LIBRARY=/usr/local/lib/libavcodec.dylib
+--------------------
+AVFORMAT_INCLUDE_DIR=/usr/local/include
+AVFORMAT_LIBRARY=/usr/local/lib/libavformat.dylib
+--------------------
+AVUTIL_INCLUDE_DIR=/usr/local/include
+AVUTIL_LIBRARY=/usr/local/lib/libavutil.dylib
+--------------------
+AVDEVICE_INCLUDE_DIR=/usr/local/include
+AVDEVICE_LIBRARY=/usr/local/lib/libavdevice.dylib
+--------------------
+AVFILTER_INCLUDE_DIR=/usr/local/include
+AVFILTER_LIBRARY=/usr/local/lib/libavfilter.dylib
+--------------------
+POSTPROC_INCLUDE_DIR=/usr/local/include
+POSTPROC_LIBRARY=/usr/local/lib/libpostproc.dylib
+--------------------
+SWRESAMPLE_INCLUDE_DIR=/usr/local/include
+SWRESAMPLE_LIBRARY=/usr/local/lib/libswresample.dylib
+--------------------
+SWSCALE_INCLUDE_DIR=/usr/local/include
+SWSCALE_LIBRARY=/usr/local/lib/libswscale.dylib
+--------------------
+SDL_INCLUDE_DIR=/usr/local/include
+SDL_LIBRARY=/usr/local/lib/libSDL2.dylib
+--------------------
+OpenAL_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenAL.framework
+OpenAL_LIBRARY=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenAL.framework
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/hewro/Documents/work/bupt/study/justPlayer/cmake-build-debug

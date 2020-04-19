@@ -44,8 +44,10 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Users/hewro/Documents/work/bupt/study/justPlayer/include"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenAL.framework"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
@@ -65,8 +67,10 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Users/hewro/Documents/work/bupt/study/justPlayer/include"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenAL.framework"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
@@ -80,8 +84,17 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/hewro/Documents/work/bupt/study/justPlayer/VideoGrabber.cpp">
+			<Option target="justPlayer"/>
+		</Unit>
+		<Unit filename="/Users/hewro/Documents/work/bupt/study/justPlayer/VideoGrabber.h">
+			<Option target="justPlayer"/>
+		</Unit>
 		<Unit filename="/Users/hewro/Documents/work/bupt/study/justPlayer/main.cpp">
 			<Option target="justPlayer"/>
+		</Unit>
+		<Unit filename="/Users/hewro/Documents/work/bupt/study/justPlayer/.SET_LOCAL_PATH.cmake">
+			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 		<Unit filename="/Users/hewro/Documents/work/bupt/study/justPlayer/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
