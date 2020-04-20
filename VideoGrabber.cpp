@@ -83,30 +83,31 @@ void VideoGrabber::startGrab() {
         ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
 
         if (ret == 0 || ret == AVERROR(EAGAIN)) {
-            std::cout << "avcodec_receive_frame success." << std::endl;
             if (ret == AVERROR(EAGAIN)) {
                 // need more packet.
                 std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
             }else{
-                std::cout << "2333?" << std::endl;
+                std::cout << "avcodec_receive_frame success." << std::endl;
                 if (inputFrame!= nullptr){
                     frameRGB = av_frame_alloc();
                     av_image_fill_arrays(frameRGB->data, frameRGB->linesize, out_buffer,
-                                         AV_PIX_FMT_RGB24, decodeVideoContext->width, decodeVideoContext->height, 32);
-                    frameRGB->format = AV_PIX_FMT_RGB24;
+                                         AV_PIX_FMT_YUV420P, decodeVideoContext->width,
+                                         decodeVideoContext->height, 32);
+                    frameRGB->format = AV_PIX_FMT_YUV420P;
                     frameRGB->width = inputFrame->width;
                     frameRGB->height = inputFrame->height;
                     sws_scale(video_convert_ctx, (const uint8_t *const *) inputFrame->data,
-                              inputFrame->linesize, 0, decodeVideoContext->height, frameRGB->data, frameRGB->linesize);
+                              inputFrame->linesize, 0, decodeVideoContext->height,
+                              frameRGB->data, frameRGB->linesize);
                     if (frameRGB) {
                         if (lock != nullptr && frameVec != nullptr) {
-                            lock->lock();
+//                            lock->lock();
                             if (frameVec->empty()) {
                                 frameVec->push_back(frameRGB);
                             } else {
                                 av_frame_free(&frameRGB);
                             }
-                            lock->unlock();
+//                            lock->unlock();
                         }
                     }
                 }
@@ -173,8 +174,8 @@ bool VideoGrabber::openInput() {
 
 
     cout << this->filePath.c_str() << endl;
-    ret = avformat_open_input(&v_inputContext, "0", ifmt, &format_opts);
-//    ret = avformat_open_input(&v_inputContext, this->filePath.c_str(), nullptr, nullptr);
+//    ret = avformat_open_input(&v_inputContext, "0", ifmt, &format_opts);
+    ret = avformat_open_input(&v_inputContext, this->filePath.c_str(), nullptr, nullptr);
     if (ret < 0) {
         cout << "打开文件失败" + std::to_string(ret) << endl;
         flag = false;
@@ -209,7 +210,6 @@ bool VideoGrabber::openInput() {
     if (inputVideoStream != nullptr && inputVideoStream->r_frame_rate.den > 0) {
         frameRate = inputVideoStream->r_frame_rate.num / inputVideoStream->r_frame_rate.den;
     } else if (inputVideoStream != nullptr && inputVideoStream->r_frame_rate.den > 0) {
-
         frameRate = inputVideoStream->r_frame_rate.num / inputVideoStream->r_frame_rate.den;
     }
 
@@ -258,12 +258,14 @@ bool VideoGrabber::openCodec() {
     }
 
     out_buffer = (uint8_t *) av_malloc(
-            av_image_get_buffer_size(AV_PIX_FMT_RGB24, decodeVideoContext->width, decodeVideoContext->height, 32) *
+            av_image_get_buffer_size(AV_PIX_FMT_YUV420P, decodeVideoContext->width,
+                    decodeVideoContext->height, 32) *
             sizeof(uint8_t));
     //重编码器
     video_convert_ctx = sws_getContext(decodeVideoContext->width, decodeVideoContext->height,
                                        decodeVideoContext->pix_fmt, decodeVideoContext->width,
-                                       decodeVideoContext->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+                                       decodeVideoContext->height, AV_PIX_FMT_YUV420P,
+                                       SWS_BICUBIC, NULL, NULL, NULL);
     __END:
     if (!flag) {
         if (decodeVideoContext) {

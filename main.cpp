@@ -10,7 +10,7 @@ extern "C" {
 #include "SDL2/SDL.h"
 };
 
-void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> frameVec);
+void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex);
 void picRefresher(int timeInterval, bool& exitRefresh);
 
 int main() {
@@ -25,17 +25,20 @@ int main() {
     videoGrabber->start();
 
     //播放视频
-    playSdlVideo(videoGrabber, &mtx, frameVec);
+    playSdlVideo(videoGrabber, &mtx);
 
     return 0;
 }
 
 
-void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> frameVec){
+void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex){
     //播放视频
     SDL_Window* screen;
-    int width = 640;
-    int height = 360;
+
+    cout << "width" << videoGrabber-> decodeVideoContext->width<< endl;
+    cout << "height" << videoGrabber-> decodeVideoContext->height<< endl;
+    int width = videoGrabber-> decodeVideoContext->width;
+    int height = videoGrabber-> decodeVideoContext->height;
     // SDL 2.0 Support for multiple windows
     screen = SDL_CreateWindow("Simplest Video Play SDL2", SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, width, height,
@@ -66,8 +69,9 @@ void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> fram
         if (videoGrabber->stopFlag){
             break;
         }
-        if (!frameVec.empty()){
-            AVFrame* frame = frameVec.back();
+        if (!videoGrabber->frameVec->empty()){
+            cout << "not empty" << endl;
+            AVFrame* frame = videoGrabber->frameVec->back();
             if (frame != nullptr) {
                 //显示画面
                 SDL_UpdateYUVTexture(sdlTexture,  // the texture to update
@@ -87,13 +91,13 @@ void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> fram
                 SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
                 SDL_RenderPresent(sdlRenderer);
             }
+        }else{
+            //
+            cout << "empty" << endl;
         }
-
-        //根据帧率休眠一定时间
-//        std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / videoGrabber->frameRate)));
-
     }
 
+    refreshThread.join();
 }
 
 #define REFRESH_EVENT (SDL_USEREVENT + 1)
