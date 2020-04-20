@@ -40,7 +40,7 @@ void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex){
     int width = videoGrabber-> decodeVideoContext->width;
     int height = videoGrabber-> decodeVideoContext->height;
     // SDL 2.0 Support for multiple windows
-    screen = SDL_CreateWindow("Simplest Video Play SDL2", SDL_WINDOWPOS_UNDEFINED,
+    screen = SDL_CreateWindow("justPlayer", SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, width, height,
                               SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 

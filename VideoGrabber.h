@@ -73,7 +73,8 @@ public:
     bool openCodec();//初始化解码器和编码器
 
     bool start();//启动
-    void startGrab();//循环解封装—-->acpacket—解码器-->avframe
+    void startGrab();//循环解封装
+    void startProcess();//acpacket—解码器-->avframe
     void close();//关闭时候一些释放操作
     AVFormatContext		*v_inputContext;
     int					videoIndex;//视频流的index

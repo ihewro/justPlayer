@@ -23,10 +23,11 @@ bool VideoGrabber::start() {
         av_log(NULL, AV_LOG_ERROR, "解码器打开失败");
         return false;
     }
-    cout << "ok" << endl;
 
     std::thread videoThread{&VideoGrabber::startGrab, this};
+    std::thread videoProcessThread{&VideoGrabber::startProcess, this};
     videoThread.detach();
+    videoProcessThread.detach();
 
     return true;
 }
@@ -44,90 +45,92 @@ void VideoGrabber::startGrab() {
         AVFrame *inputFrame = av_frame_alloc();
         AVFrame *frameRGB = nullptr;
         av_init_packet(inputPkt);
+//        AVPacket* inputPkt = (AVPacket*)av_malloc(sizeof(AVPacket));
         ret = av_read_frame(v_inputContext, inputPkt);
         if (ret < 0) {
-            av_log(NULL, AV_LOG_INFO, "读取摄像头图像失败:%d", ret);
+            av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
             goto __END;
         }else{
             cout << "获取avPacket成功" << endl;
         }
 
-        ret = avcodec_send_packet(decodeVideoContext, inputPkt);
+        if (inputPkt->stream_index == videoIndex){
+            ret = avcodec_send_packet(decodeVideoContext, inputPkt);
 
-        if (ret == 0) {
+            if (ret == 0) {
 //            av_packet_free(&targetPkt);
 //            targetPkt = nullptr;
-             cout << "[video] avcodec_send_packet success." << endl;
-        } else{
-            stopFlag = true;
+                cout << "[video] avcodec_send_packet success." << endl;
+            } else{
+                stopFlag = true;
 
-            if (ret == AVERROR(EAGAIN)) {
-                cout << "[avcodec_send_packet]send buff full" << endl;
-                // buff full, can not decode any more, nothing need to do.
-                // keep the packet for next time decode.
-            } else if (ret == AVERROR_EOF) {
-                // no new packets can be sent to it, it is safe.
-                cout << "[WARN]  no new packets can be sent to it. index=" << this->videoIndex << endl;
-            } else {
-                string errorMsg = "+++++++++ ERROR avcodec_send_packet error: ";
-                errorMsg += std::to_string(ret);
-                cout << errorMsg << endl;
-                throw std::runtime_error(errorMsg);
+                if (ret == AVERROR(EAGAIN)) {
+                    cout << "[avcodec_send_packet]send buff full" << endl;
+                    // buff full, can not decode any more, nothing need to do.
+                    // keep the packet for next time decode.
+                } else if (ret == AVERROR_EOF) {
+                    // no new packets can be sent to it, it is safe.
+                    cout << "[WARN]  no new packets can be sent to it. index=" << this->videoIndex << endl;
+                } else {
+                    string errorMsg = "+++++++++ ERROR avcodec_send_packet error: ";
+                    errorMsg += std::to_string(ret);
+                    cout << errorMsg << endl;
+                    throw std::runtime_error(errorMsg);
+                }
+                av_log(NULL, AV_LOG_INFO, "avcodec_send_packet fail:%d", ret);
+                goto __END;
             }
-            av_log(NULL, AV_LOG_INFO, "avcodec_send_packet fail:%d", ret);
-            goto __END;
-        }
 
 
 
-        ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
+            ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
 
-        if (ret == 0 || ret == AVERROR(EAGAIN)) {
-            if (ret == AVERROR(EAGAIN)) {
-                // need more packet.
-                std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
-            }else{
-                std::cout << "avcodec_receive_frame success." << std::endl;
-                if (inputFrame!= nullptr){
-                    frameRGB = av_frame_alloc();
-                    av_image_fill_arrays(frameRGB->data, frameRGB->linesize, out_buffer,
-                                         AV_PIX_FMT_YUV420P, decodeVideoContext->width,
-                                         decodeVideoContext->height, 32);
-                    frameRGB->format = AV_PIX_FMT_YUV420P;
-                    frameRGB->width = inputFrame->width;
-                    frameRGB->height = inputFrame->height;
-                    sws_scale(video_convert_ctx, (const uint8_t *const *) inputFrame->data,
-                              inputFrame->linesize, 0, decodeVideoContext->height,
-                              frameRGB->data, frameRGB->linesize);
-                    if (frameRGB) {
-                        if (lock != nullptr && frameVec != nullptr) {
+            if (ret == 0 || ret == AVERROR(EAGAIN)) {
+                if (ret == AVERROR(EAGAIN)) {
+                    // need more packet.
+                    std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
+                }else{
+                    std::cout << "avcodec_receive_frame success." << std::endl;
+                    if (inputFrame!= nullptr){
+                        frameRGB = av_frame_alloc();
+                        av_image_fill_arrays(frameRGB->data, frameRGB->linesize, out_buffer,
+                                             AV_PIX_FMT_YUV420P, decodeVideoContext->width,
+                                             decodeVideoContext->height, 32);
+                        frameRGB->format = AV_PIX_FMT_YUV420P;
+                        frameRGB->width = inputFrame->width;
+                        frameRGB->height = inputFrame->height;
+                        sws_scale(video_convert_ctx, (const uint8_t *const *) inputFrame->data,
+                                  inputFrame->linesize, 0, decodeVideoContext->height,
+                                  frameRGB->data, frameRGB->linesize);
+                        if (frameRGB) {
+                            if (lock != nullptr && frameVec != nullptr) {
 //                            lock->lock();
-                            if (frameVec->empty()) {
-                                frameVec->push_back(frameRGB);
-                            } else {
-                                av_frame_free(&frameRGB);
-                            }
+                                if (frameVec->empty()) {
+                                    frameVec->push_back(frameRGB);
+                                } else {
+                                    av_frame_free(&frameRGB);
+                                }
 //                            lock->unlock();
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            stopFlag = true;
-            if (ret == AVERROR_EOF) {
-                cout << "+++++++++++++++++++++++++++++ MediaProcessor no more output frames. index="
-                     << this->videoIndex << endl;
             } else {
-                string errorMsg = "avcodec_receive_frame error: ";
-                errorMsg += ret;
-                cout << errorMsg << endl;
-                throw std::runtime_error(errorMsg);
+                stopFlag = true;
+                if (ret == AVERROR_EOF) {
+                    cout << "+++++++++++++++++++++++++++++ MediaProcessor no more output frames. index="
+                         << this->videoIndex << endl;
+                } else {
+                    string errorMsg = "avcodec_receive_frame error: ";
+                    errorMsg += ret;
+                    cout << errorMsg << endl;
+                    throw std::runtime_error(errorMsg);
+                }
+
+                av_log(NULL, AV_LOG_INFO, "avcodec_receive_frame fail:%d", ret);
+                goto __END;
             }
-
-            av_log(NULL, AV_LOG_INFO, "avcodec_receive_frame fail:%d", ret);
-            goto __END;
         }
-
 
         __END:
         if (inputPkt) {
@@ -142,6 +145,8 @@ void VideoGrabber::startGrab() {
     }
 
 }
+
+
 
 void VideoGrabber::close() {
     if (decodeVideoContext) {
@@ -282,4 +287,10 @@ void VideoGrabber::setMutex(mutex *pMutex) {
 
 void VideoGrabber::setVector(vector<AVFrame *> *vec) {
     frameVec = vec;
+}
+
+void VideoGrabber::startProcess() {
+    while (stopFlag){
+
+    }
 }
