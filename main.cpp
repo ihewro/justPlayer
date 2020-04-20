@@ -11,6 +11,8 @@ extern "C" {
 };
 
 void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> frameVec);
+void picRefresher(int timeInterval, bool& exitRefresh);
+
 int main() {
     string filePath = "/Users/hewro/Downloads/产品介绍4.mp4";
     std::cout << "Hello, World!" << std::endl;
@@ -18,11 +20,12 @@ int main() {
     vector<AVFrame*>	frameVec{};//存储视频帧
     //启动视频抓取
     auto* videoGrabber = new VideoGrabber(filePath);
-    videoGrabber->start();
     videoGrabber->setMutex(&mtx);
     videoGrabber->setVector(&frameVec);
-    playSdlVideo(videoGrabber, &mtx, frameVec);//播放视频
-    //todo: 播放画面
+    videoGrabber->start();
+
+    //播放视频
+    playSdlVideo(videoGrabber, &mtx, frameVec);
 
     return 0;
 }
@@ -51,8 +54,15 @@ void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> fram
     SDL_Texture* sdlTexture =
             SDL_CreateTexture(sdlRenderer, pixformat, SDL_TEXTUREACCESS_STREAMING, width, height);
 
+    SDL_Event event;
+
+    //定时器刷新图片的定时器
+    std::thread refreshThread{picRefresher, (int)(1000 / videoGrabber->frameRate), std::ref(videoGrabber->stopFlag)};
+
     while (true){
         //等待sdl 事件
+        SDL_WaitEvent(&event);
+
         if (videoGrabber->stopFlag){
             break;
         }
@@ -80,7 +90,24 @@ void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex,vector<AVFrame*> fram
         }
 
         //根据帧率休眠一定时间
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / videoGrabber->frameRate)));
+//        std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / videoGrabber->frameRate)));
 
     }
+
+}
+
+#define REFRESH_EVENT (SDL_USEREVENT + 1)
+
+
+//定时器
+void picRefresher(int timeInterval, bool& exitRefresh) {
+    cout << "picRefresher timeInterval[" << timeInterval << "]" << endl;
+    while (!exitRefresh) {
+        SDL_Event event;
+        event.type = REFRESH_EVENT;
+        SDL_PushEvent(&event);
+        std::this_thread::sleep_for(std::chrono::milliseconds(timeInterval));
+
+    }
+    cout << "[THREAD] picRefresher thread finished." << endl;
 }

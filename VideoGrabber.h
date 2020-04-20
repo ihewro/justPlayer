@@ -46,11 +46,29 @@ using std::string;
 using std::mutex;
 using std::vector;
 class VideoGrabber {
-    string filePath;
 
 public:
-    explicit VideoGrabber(string filePath):filePath(std::move(filePath)){};
+    VideoGrabber(const string& filePath){
+        avdevice_register_all();
+        this->filePath = filePath;
 
+
+        videoIndex = -1;
+        decodeVideo = nullptr;
+        decodeVideoContext = nullptr;
+        v_inputContext = nullptr;
+        inputVideoStream = nullptr;
+        frameRate = 0;
+        stopFlag = false;
+        video_convert_ctx = nullptr;
+
+        this->v_inputContext = avformat_alloc_context();
+
+
+        std::cout <<  "file: " <<filePath << std::endl;
+    };
+
+    string filePath;
     bool openInput();//打开输入流
     bool openCodec();//初始化解码器和编码器
 
