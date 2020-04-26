@@ -72,6 +72,7 @@ public:
 
     void setMutex(mutex *pMutex);
     void setVector(vector<AVFrame *> *vec);
+
 };
 
 

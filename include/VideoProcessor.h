@@ -27,6 +27,12 @@ public:
     vector<AVFrame *> *frameVec;//存储视频流中的帧
     int frameRate = 30;//视频的帧率
 
+    void setFramerate();
+
+    bool setDecodeCtx() override;
+
+    bool setCovertCtx() override;
+
 };
 
 

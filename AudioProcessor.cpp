@@ -15,3 +15,11 @@
 void AudioProcessor::avFrameEncode(AVFrame *inputFrame) {
     //重采样
 }
+
+bool AudioProcessor::setDecodeCtx() {
+    return false;
+}
+
+bool AudioProcessor::setCovertCtx() {
+    return false;
+}

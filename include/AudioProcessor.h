@@ -51,13 +51,10 @@ using std::endl;
 
 class AudioProcessor: public Processor {
 
-    int					audioIndex;
-    AVCodec				*decodeAudio;
-    struct AVCodecContext		*decodeAudioContext;
-    AVFormatContext		*a_inputContext;
-    AVStream			*inputAudioStream;
-    AVCodecID			m_audio_codec_id;
-    bool				stopFlag;
+public:
+    bool setDecodeCtx() override;
+
+    bool setCovertCtx() override;
 
 public:
     void avFrameEncode(AVFrame *inputFrame) override;

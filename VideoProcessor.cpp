@@ -40,3 +40,64 @@ void VideoProcessor::avFrameEncode(AVFrame *inputFrame) {
 
 
 }
+
+void VideoProcessor::setFramerate() {
+    if (inputStream != nullptr && inputStream->r_frame_rate.den > 0) {
+        frameRate = inputStream->r_frame_rate.num / inputStream->r_frame_rate.den;
+    } else if (inputStream != nullptr && inputStream->r_frame_rate.den > 0) {
+        frameRate = inputStream->r_frame_rate.num / inputStream->r_frame_rate.den;
+    }
+}
+
+bool VideoProcessor::setDecodeCtx() {
+    int ret = -1;
+    bool flag = true;
+    AVCodec *decodeVideo;//视频流的解码器
+
+    //1. 查找解码器
+    decodeVideo = avcodec_find_decoder(inputStream->codecpar->codec_id);
+    if (!decodeVideo) {
+        av_log(NULL, AV_LOG_INFO, "摄像头输入流解码器查找失败");
+        flag = false;
+    }else{//2. 解码器上下文创建
+        decodeContext = avcodec_alloc_context3(decodeVideo);
+        if (!decodeContext) {
+            av_log(NULL, AV_LOG_INFO, "视频输入流解码器上下文分配内存失败");
+            flag = false;
+        }else{//3. 解码器参数复制
+            ret = avcodec_parameters_to_context(decodeContext, inputStream->codecpar);
+            if (ret < 0) {
+                av_log(NULL, AV_LOG_INFO, "拷贝视频输入流解码器上下文参数失败:");
+                flag = false;
+            } else{//4. 打开解码器
+                ret = avcodec_open2(decodeContext, decodeVideo, NULL);
+                if (ret < 0) {
+                    av_log(NULL, AV_LOG_INFO, "打开视频输入流解码器失败:%d", ret);
+                    flag = false;
+                }
+            }
+        }
+    }
+
+    return flag;
+}
+
+bool VideoProcessor::setCovertCtx() {
+
+    out_buffer = (uint8_t *) av_malloc(
+            av_image_get_buffer_size(AV_PIX_FMT_YUV420P,
+                                     decodeContext->width,
+                                     decodeContext->height, 32) *
+            sizeof(uint8_t));
+    //重编码器
+    convert_ctx = sws_getContext(
+            decodeContext->width,
+            decodeContext->height,
+            decodeContext->pix_fmt,
+            decodeContext->width,
+            decodeContext->height,
+            AV_PIX_FMT_YUV420P,
+            SWS_BICUBIC, NULL, NULL, NULL);
+
+    return true;
+}

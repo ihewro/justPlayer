@@ -54,6 +54,12 @@ public:
     AVCodecContext *decodeContext;//解码器
     struct SwsContext *convert_ctx;//重编码器
 
+    //设置解码器
+    virtual bool setDecodeCtx() = 0;
+
+    //设置编码器
+    virtual bool setCovertCtx() = 0;
+
     //解码
     bool avP2F(bool &stopFlag, AVPacket *inputPkt, AVFrame *inputFrame);
 
