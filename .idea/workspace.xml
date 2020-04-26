@@ -12,16 +12,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4a588b1-cb05-4309-9a1b-28c137fd1ac9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AudioProcessor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Processor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/VideoProcessor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/AudioProcessor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/Processor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/VideoProcessor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VideoGrabber.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/VideoGrabber.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VideoGrabber.h" beforeDir="false" afterPath="$PROJECT_DIR$/VideoGrabber.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/VideoGrabber.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/VideoGrabber.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/justPlayer.dir/main.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/justPlayer" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/justPlayer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VideoGrabber.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/FFmpegGrabber.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VideoGrabber.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/FFmpegGrabber.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,6 +51,11 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="justPlayer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="justPlayer" TARGET_NAME="justPlayer" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="justPlayer" RUN_TARGET_NAME="justPlayer">
       <method v="2">
@@ -70,7 +77,12 @@
       <workItem from="1587263917327" duration="8215000" />
       <workItem from="1587301026212" duration="206000" />
       <workItem from="1587301292847" duration="7696000" />
-      <workItem from="1587364786300" duration="10712000" />
+      <workItem from="1587364786300" duration="11445000" />
+      <workItem from="1587453627798" duration="617000" />
+      <workItem from="1587541740941" duration="411000" />
+      <workItem from="1587651358896" duration="6117000" />
+      <workItem from="1587711402640" duration="823000" />
+      <workItem from="1587891884664" duration="1536000" />
     </task>
     <servers />
   </component>
@@ -78,32 +90,32 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1638" height="334" key="GridCell.Tab.0.bottom" timestamp="1587385473219">
+    <state width="1638" height="334" key="GridCell.Tab.0.bottom" timestamp="1587395920119">
       <screen x="0" y="1050" width="1680" height="1050" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128358" />
-    <state width="1638" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587385473219" />
+    <state width="1638" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920119" />
     <state width="1567" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587375528946" />
     <state width="1638" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111063" />
-    <state width="1638" height="334" key="GridCell.Tab.0.center" timestamp="1587385473218">
+    <state width="1638" height="334" key="GridCell.Tab.0.center" timestamp="1587395920118">
       <screen x="0" y="1050" width="1680" height="1050" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128357" />
-    <state width="1638" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587385473218" />
+    <state width="1638" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920118" />
     <state width="1567" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587375528945" />
     <state width="1638" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111062" />
-    <state width="1638" height="334" key="GridCell.Tab.0.left" timestamp="1587385473217">
+    <state width="1638" height="334" key="GridCell.Tab.0.left" timestamp="1587395920118">
       <screen x="0" y="1050" width="1680" height="1050" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128356" />
-    <state width="1638" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587385473217" />
+    <state width="1638" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920118" />
     <state width="1567" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587375528944" />
     <state width="1638" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111061" />
-    <state width="1638" height="334" key="GridCell.Tab.0.right" timestamp="1587385473218">
+    <state width="1638" height="334" key="GridCell.Tab.0.right" timestamp="1587395920119">
       <screen x="0" y="1050" width="1680" height="1050" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128357" />
-    <state width="1638" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587385473218" />
+    <state width="1638" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920119" />
     <state width="1567" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587375528946" />
     <state width="1638" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111063" />
     <state width="1564" height="336" key="GridCell.Tab.1.bottom" timestamp="1587311990598">
@@ -142,9 +154,10 @@
       <screen x="0" y="1050" width="1680" height="1050" />
     </state>
     <state x="587" y="1384" key="refactoring.ChangeSignatureDialog/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587307826348" />
-    <state x="505" y="1283" width="670" height="676" key="search.everywhere.popup" timestamp="1587383370585">
-      <screen x="0" y="1050" width="1680" height="1050" />
+    <state x="490" y="251" width="670" height="662" key="search.everywhere.popup" timestamp="1587696839469">
+      <screen x="0" y="23" width="1629" height="1027" />
     </state>
     <state x="505" y="1283" width="670" height="676" key="search.everywhere.popup/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587383370585" />
+    <state x="490" y="251" width="670" height="662" key="search.everywhere.popup/0.1050.1680.1050/0.23.1629.1027@0.23.1629.1027" timestamp="1587696839469" />
   </component>
 </project>

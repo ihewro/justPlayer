@@ -8,11 +8,11 @@
 // Created by hewro on 2020/4/19.
 //
 
-#include "VideoGrabber.h"
+#include "include/FFmpegGrabber.h"
 using std::cout;
 using std::endl;
 
-bool VideoGrabber::start() {
+bool FFmpegGrabber::start() {
 
     if (!openInput()) {
         av_log(NULL, AV_LOG_ERROR, "输入流打开失败");
@@ -24,15 +24,15 @@ bool VideoGrabber::start() {
         return false;
     }
 
-    std::thread videoThread{&VideoGrabber::startGrab, this};
-    std::thread videoProcessThread{&VideoGrabber::startProcess, this};
+    std::thread videoThread{&FFmpegGrabber::startGrab, this};
+    std::thread videoProcessThread{&FFmpegGrabber::startProcess, this};
     videoThread.detach();
     videoProcessThread.detach();
 
     return true;
 }
 
-void VideoGrabber::startGrab() {
+void FFmpegGrabber::startGrab() {
     cout << "startGrab" << endl;
     stopFlag = false;
     int ret;
@@ -55,81 +55,10 @@ void VideoGrabber::startGrab() {
         }
 
         if (inputPkt->stream_index == videoIndex){
-            ret = avcodec_send_packet(decodeVideoContext, inputPkt);
 
-            if (ret == 0) {
-//            av_packet_free(&targetPkt);
-//            targetPkt = nullptr;
-                cout << "[video] avcodec_send_packet success." << endl;
-            } else{
-                stopFlag = true;
+        }else{
+            //音频的avPacket处理
 
-                if (ret == AVERROR(EAGAIN)) {
-                    cout << "[avcodec_send_packet]send buff full" << endl;
-                    // buff full, can not decode any more, nothing need to do.
-                    // keep the packet for next time decode.
-                } else if (ret == AVERROR_EOF) {
-                    // no new packets can be sent to it, it is safe.
-                    cout << "[WARN]  no new packets can be sent to it. index=" << this->videoIndex << endl;
-                } else {
-                    string errorMsg = "+++++++++ ERROR avcodec_send_packet error: ";
-                    errorMsg += std::to_string(ret);
-                    cout << errorMsg << endl;
-                    throw std::runtime_error(errorMsg);
-                }
-                av_log(NULL, AV_LOG_INFO, "avcodec_send_packet fail:%d", ret);
-                goto __END;
-            }
-
-
-
-            ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
-
-            if (ret == 0 || ret == AVERROR(EAGAIN)) {
-                if (ret == AVERROR(EAGAIN)) {
-                    // need more packet.
-                    std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
-                }else{
-                    std::cout << "avcodec_receive_frame success." << std::endl;
-                    if (inputFrame!= nullptr){
-                        frameRGB = av_frame_alloc();
-                        av_image_fill_arrays(frameRGB->data, frameRGB->linesize, out_buffer,
-                                             AV_PIX_FMT_YUV420P, decodeVideoContext->width,
-                                             decodeVideoContext->height, 32);
-                        frameRGB->format = AV_PIX_FMT_YUV420P;
-                        frameRGB->width = inputFrame->width;
-                        frameRGB->height = inputFrame->height;
-                        sws_scale(video_convert_ctx, (const uint8_t *const *) inputFrame->data,
-                                  inputFrame->linesize, 0, decodeVideoContext->height,
-                                  frameRGB->data, frameRGB->linesize);
-                        if (frameRGB) {
-                            if (lock != nullptr && frameVec != nullptr) {
-//                            lock->lock();
-                                if (frameVec->empty()) {
-                                    frameVec->push_back(frameRGB);
-                                } else {
-                                    av_frame_free(&frameRGB);
-                                }
-//                            lock->unlock();
-                            }
-                        }
-                    }
-                }
-            } else {
-                stopFlag = true;
-                if (ret == AVERROR_EOF) {
-                    cout << "+++++++++++++++++++++++++++++ MediaProcessor no more output frames. index="
-                         << this->videoIndex << endl;
-                } else {
-                    string errorMsg = "avcodec_receive_frame error: ";
-                    errorMsg += ret;
-                    cout << errorMsg << endl;
-                    throw std::runtime_error(errorMsg);
-                }
-
-                av_log(NULL, AV_LOG_INFO, "avcodec_receive_frame fail:%d", ret);
-                goto __END;
-            }
         }
 
         __END:
@@ -140,7 +69,7 @@ void VideoGrabber::startGrab() {
             av_frame_free(&inputFrame);
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     }
 
@@ -148,7 +77,7 @@ void VideoGrabber::startGrab() {
 
 
 
-void VideoGrabber::close() {
+void FFmpegGrabber::close() {
     if (decodeVideoContext) {
         avcodec_close(decodeVideoContext);
         avcodec_free_context(&decodeVideoContext);
@@ -164,7 +93,7 @@ void VideoGrabber::close() {
 }
 
 
-bool VideoGrabber::openInput() {
+bool FFmpegGrabber::openInput() {
     int ret = -1;
     bool flag = true;
 
@@ -197,14 +126,24 @@ bool VideoGrabber::openInput() {
     for (int i = 0; i < v_inputContext->nb_streams; ++i) {
         if (v_inputContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             videoIndex = i;
+            cout << "video stream index = : [" << i << "]" << endl;
             inputVideoStream = v_inputContext->streams[i];
-            break;
+        }
+
+        if (v_inputContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO && audioIndex == -1) {
+            audioIndex = i;
+            cout << "audio stream index = : [" << i << "]" << endl;
         }
     }
-
     if (videoIndex < 0) {
         flag = false;
         av_log(NULL, AV_LOG_INFO, "文件流的视频流查找失败");
+        goto __END;
+    }
+
+    if (audioIndex < 0) {
+        flag = false;
+        av_log(NULL, AV_LOG_INFO, "文件流的音频流查找失败");
         goto __END;
     }
 
@@ -231,7 +170,7 @@ bool VideoGrabber::openInput() {
     return flag;
 }
 
-bool VideoGrabber::openCodec() {
+bool FFmpegGrabber::openCodec() {
     bool flag = true;
     int ret = -1;
 
@@ -281,16 +220,37 @@ bool VideoGrabber::openCodec() {
     return flag;
 }
 
-void VideoGrabber::setMutex(mutex *pMutex) {
+void FFmpegGrabber::setMutex(mutex *pMutex) {
     lock = pMutex;
 }
 
-void VideoGrabber::setVector(vector<AVFrame *> *vec) {
+void FFmpegGrabber::setVector(vector<AVFrame *> *vec) {
     frameVec = vec;
 }
 
-void VideoGrabber::startProcess() {
+void FFmpegGrabber::startProcess() {
     while (stopFlag){
 
     }
+}
+
+
+//构造函数
+FFmpegGrabber::FFmpegGrabber(const string &filePath) {
+    avdevice_register_all();
+    this->filePath = filePath;
+
+    videoIndex = -1;
+    decodeVideo = nullptr;
+    decodeVideoContext = nullptr;
+    v_inputContext = nullptr;
+    inputVideoStream = nullptr;
+    frameRate = 0;
+    stopFlag = false;
+    video_convert_ctx = nullptr;
+
+    this->v_inputContext = avformat_alloc_context();
+
+
+    std::cout <<  "file: " <<filePath << std::endl;
 }

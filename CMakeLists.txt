@@ -150,7 +150,7 @@ message(OpenAL_LIBRARY=${OpenAL_LIBRARY})
 ############################################
 add_executable (${PROJECT_NAME}
         "main.cpp"
-        VideoGrabber.cpp VideoGrabber.h)
+        FFmpegGrabber.cpp include/FFmpegGrabber.h AudioProcessor.cpp include/AudioProcessor.h Processor.cpp include/Processor.h VideoProcessor.cpp include/VideoProcessor.h)
 
 
 target_include_directories( ${PROJECT_NAME}

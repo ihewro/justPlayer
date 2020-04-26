@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <string>
-#include "VideoGrabber.h"
+#include "include/FFmpegGrabber.h"
 
 using std::string;
 using std::cout;
@@ -10,7 +10,7 @@ extern "C" {
 #include "SDL2/SDL.h"
 };
 
-void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex);
+void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex);
 void picRefresher(int timeInterval, bool& exitRefresh);
 
 int main() {
@@ -19,7 +19,7 @@ int main() {
     std::mutex			mtx{};//帧锁，避免frameVector出现线程冲突问题
     vector<AVFrame*>	frameVec{};//存储视频帧
     //启动视频抓取
-    auto* videoGrabber = new VideoGrabber(filePath);
+    auto* videoGrabber = new FFmpegGrabber(filePath);
     videoGrabber->setMutex(&mtx);
     videoGrabber->setVector(&frameVec);
     videoGrabber->start();
@@ -31,7 +31,7 @@ int main() {
 }
 
 
-void playSdlVideo(VideoGrabber* videoGrabber,mutex *pMutex){
+void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
     //播放视频
     SDL_Window* screen;
 

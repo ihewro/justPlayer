@@ -4,8 +4,8 @@
   * Time: 17:24
   * Description: 画面信息抓取
   */
-#ifndef JUSTPLAYER_VIDEOGRABBER_H
-#define JUSTPLAYER_VIDEOGRABBER_H
+#ifndef JUSTPLAYER_FFMPEGGRABBER_H
+#define JUSTPLAYER_FFMPEGGRABBER_H
 
 #include <iostream>
 #include <string>
@@ -17,6 +17,8 @@
 #include<sstream>
 #include<list>
 #include<tuple>
+#include "AudioProcessor.h"
+#include "VideoProcessor.h"
 
 
 extern "C"
@@ -45,28 +47,10 @@ extern "C"
 using std::string;
 using std::mutex;
 using std::vector;
-class VideoGrabber {
+class FFmpegGrabber {
 
 public:
-    VideoGrabber(const string& filePath){
-        avdevice_register_all();
-        this->filePath = filePath;
-
-
-        videoIndex = -1;
-        decodeVideo = nullptr;
-        decodeVideoContext = nullptr;
-        v_inputContext = nullptr;
-        inputVideoStream = nullptr;
-        frameRate = 0;
-        stopFlag = false;
-        video_convert_ctx = nullptr;
-
-        this->v_inputContext = avformat_alloc_context();
-
-
-        std::cout <<  "file: " <<filePath << std::endl;
-    };
+    FFmpegGrabber(const string& filePath);
 
     string filePath;
     bool openInput();//打开输入流
@@ -77,20 +61,29 @@ public:
     void startProcess();//acpacket—解码器-->avframe
     void close();//关闭时候一些释放操作
     AVFormatContext		*v_inputContext;
-    int					videoIndex;//视频流的index
-    AVStream			*inputVideoStream;//视频流
-    int                 frameRate = 30;//视频的帧率
-    bool				stopFlag = false;//文件读取结束标志，或者文件读取出错
-    AVCodec				*decodeVideo;//视频流的解码器
-    AVCodecContext		*decodeVideoContext;//视频流的解码器上下文
-    uint8_t *           out_buffer = nullptr;
-    struct SwsContext	*video_convert_ctx;//视频流重编码器上下文
-    mutex               *lock;
-    vector<AVFrame *>  *frameVec;//存储视频流中的帧
+
+
+    //音频流部分
+    int audioIndex = -1;
+    AudioProcessor audioProcessor;
+
+
+    //视频流部分
+    VideoProcessor videoProcessor;
+    int videoIndex;//视频流的index
+    AVStream *inputVideoStream;//视频流
+    int frameRate = 30;//视频的帧率
+    bool stopFlag = false;//文件读取结束标志，或者文件读取出错
+    AVCodec *decodeVideo;//视频流的解码器
+    AVCodecContext *decodeVideoContext;//视频流的解码器上下文
+    uint8_t *out_buffer = nullptr;
+    struct SwsContext *video_convert_ctx;//视频流重编码器上下文
+    mutex *lock;
+    vector<AVFrame *> *frameVec;//存储视频流中的帧
 
 
     std::thread	videoThread() {
-        return std::thread(&VideoGrabber::start, this);
+        return std::thread(&FFmpegGrabber::start, this);
     };
 
     void setMutex(mutex *pMutex);
@@ -98,4 +91,4 @@ public:
 };
 
 
-#endif //JUSTPLAYER_VIDEOGRABBER_H
+#endif //JUSTPLAYER_FFMPEGGRABBER_H
