@@ -10,7 +10,8 @@
 
 #include "include/AudioProcessor.h"
 
-void AudioProcessor::avFrameEncode() {
-    //重采样
 
+
+void AudioProcessor::avFrameEncode(AVFrame *inputFrame) {
+    //重采样
 }

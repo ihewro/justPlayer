@@ -12,7 +12,20 @@
 #define JUSTPLAYER_VIDEOPROCESSOR_H
 
 
-class VideoProcessor  {
+#include "Processor.h"
+#include <vector>
+
+using std::vector;
+using std::mutex;
+
+class VideoProcessor: public Processor  {
+public:
+
+    uint8_t *out_buffer = nullptr;
+    mutex *lock;
+    void avFrameEncode(AVFrame *inputFrame) override;
+    vector<AVFrame *> *frameVec;//存储视频流中的帧
+
 
 };
 

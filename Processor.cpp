@@ -10,16 +10,17 @@
 
 #include "include/Processor.h"
 
-void Processor::avP2F() {
+bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
 
+    int flag = false;
 
-    ret = avcodec_send_packet(decodeVideoContext, inputPkt);
+    int ret = avcodec_send_packet(decodeVideoContext, inputPkt);
 
     if (ret == 0) {
 //            av_packet_free(&targetPkt);
 //            targetPkt = nullptr;
         cout << "[video] avcodec_send_packet success." << endl;
-    } else{
+    } else{//文件结束了
         stopFlag = true;
 
         if (ret == AVERROR(EAGAIN)) {
@@ -28,7 +29,7 @@ void Processor::avP2F() {
             // keep the packet for next time decode.
         } else if (ret == AVERROR_EOF) {
             // no new packets can be sent to it, it is safe.
-            cout << "[WARN]  no new packets can be sent to it. index=" << this->videoIndex << endl;
+            cout << "[WARN]  no new packets can be sent to it. index=" << this->index << endl;
         } else {
             string errorMsg = "+++++++++ ERROR avcodec_send_packet error: ";
             errorMsg += std::to_string(ret);
@@ -36,9 +37,7 @@ void Processor::avP2F() {
             throw std::runtime_error(errorMsg);
         }
         av_log(NULL, AV_LOG_INFO, "avcodec_send_packet fail:%d", ret);
-        goto __END;
     }
-
 
 
     ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
@@ -49,35 +48,15 @@ void Processor::avP2F() {
             std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
         }else{
             std::cout << "avcodec_receive_frame success." << std::endl;
-            if (inputFrame!= nullptr){
-                frameRGB = av_frame_alloc();
-                av_image_fill_arrays(frameRGB->data, frameRGB->linesize, out_buffer,
-                                     AV_PIX_FMT_YUV420P, decodeVideoContext->width,
-                                     decodeVideoContext->height, 32);
-                frameRGB->format = AV_PIX_FMT_YUV420P;
-                frameRGB->width = inputFrame->width;
-                frameRGB->height = inputFrame->height;
-                sws_scale(video_convert_ctx, (const uint8_t *const *) inputFrame->data,
-                          inputFrame->linesize, 0, decodeVideoContext->height,
-                          frameRGB->data, frameRGB->linesize);
-                if (frameRGB) {
-                    if (lock != nullptr && frameVec != nullptr) {
-//                            lock->lock();
-                        if (frameVec->empty()) {
-                            frameVec->push_back(frameRGB);
-                        } else {
-                            av_frame_free(&frameRGB);
-                        }
-//                            lock->unlock();
-                    }
-                }
-            }
+            //解码成功
         }
+        flag = true;
+
     } else {
         stopFlag = true;
         if (ret == AVERROR_EOF) {
             cout << "+++++++++++++++++++++++++++++ MediaProcessor no more output frames. index="
-                 << this->videoIndex << endl;
+                 << this->index << endl;
         } else {
             string errorMsg = "avcodec_receive_frame error: ";
             errorMsg += ret;
@@ -86,6 +65,20 @@ void Processor::avP2F() {
         }
 
         av_log(NULL, AV_LOG_INFO, "avcodec_receive_frame fail:%d", ret);
-        goto __END;
+    }
+
+//    Processor::releasePAndF(inputPkt,inputFrame);
+
+    return flag;
+
+}
+
+
+void Processor::releasePAndF(AVPacket *inputPkt, AVFrame *inputFrame) {
+    if (inputPkt) {
+        av_packet_free(&inputPkt);
+    }
+    if (inputFrame) {
+        av_frame_free(&inputFrame);
     }
 }

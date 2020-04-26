@@ -35,10 +35,10 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
     //播放视频
     SDL_Window* screen;
 
-    cout << "width" << videoGrabber-> decodeVideoContext->width<< endl;
-    cout << "height" << videoGrabber-> decodeVideoContext->height<< endl;
-    int width = videoGrabber-> decodeVideoContext->width;
-    int height = videoGrabber-> decodeVideoContext->height;
+    cout << "width" << videoGrabber-> videoProcessor->decodeVideoContext->width<< endl;
+    cout << "height" << videoGrabber-> videoProcessor-> decodeVideoContext->height<< endl;
+    int width = videoGrabber->videoProcessor-> decodeVideoContext->width;
+    int height = videoGrabber-> videoProcessor->decodeVideoContext->height;
     // SDL 2.0 Support for multiple windows
     screen = SDL_CreateWindow("justPlayer", SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, width, height,
@@ -59,6 +59,7 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
 
     SDL_Event event;
 
+    cout << "帧率" << videoGrabber->frameRate << endl;
     //定时器刷新图片的定时器
     std::thread refreshThread{picRefresher, (int)(1000 / videoGrabber->frameRate), std::ref(videoGrabber->stopFlag)};
 
@@ -69,9 +70,9 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
         if (videoGrabber->stopFlag){
             break;
         }
-        if (!videoGrabber->frameVec->empty()){
+        if (!videoGrabber->videoProcessor->frameVec->empty()){
             cout << "not empty" << endl;
-            AVFrame* frame = videoGrabber->frameVec->back();
+            AVFrame* frame = videoGrabber->videoProcessor->frameVec->back();
             if (frame != nullptr) {
                 //显示画面
                 SDL_UpdateYUVTexture(sdlTexture,  // the texture to update

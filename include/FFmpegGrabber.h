@@ -58,33 +58,18 @@ public:
 
     bool start();//启动
     void startGrab();//循环解封装
-    void startProcess();//acpacket—解码器-->avframe
     void close();//关闭时候一些释放操作
-    AVFormatContext		*v_inputContext;
+    AVFormatContext		*v_inputContext;//打开文件的上下文
 
-
-    //音频流部分
-    int audioIndex = -1;
-    AudioProcessor audioProcessor;
-
-
-    //视频流部分
-    VideoProcessor videoProcessor;
-    int videoIndex;//视频流的index
-    AVStream *inputVideoStream;//视频流
+    //音频流处理
+    AudioProcessor *audioProcessor;
+    //视频流处理
+    VideoProcessor *videoProcessor;
     int frameRate = 30;//视频的帧率
+
+
     bool stopFlag = false;//文件读取结束标志，或者文件读取出错
-    AVCodec *decodeVideo;//视频流的解码器
-    AVCodecContext *decodeVideoContext;//视频流的解码器上下文
-    uint8_t *out_buffer = nullptr;
-    struct SwsContext *video_convert_ctx;//视频流重编码器上下文
-    mutex *lock;
-    vector<AVFrame *> *frameVec;//存储视频流中的帧
 
-
-    std::thread	videoThread() {
-        return std::thread(&FFmpegGrabber::start, this);
-    };
 
     void setMutex(mutex *pMutex);
     void setVector(vector<AVFrame *> *vec);

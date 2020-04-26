@@ -6,23 +6,15 @@
 * ffmpeg
 * sdl
 
-## 主要流程
+## 文件结构
 
-### 解封装
-Grabber
-因为视频流和视频流是从一个文件里面打开的，所以写在一起就可以了
+ffmpegGrabber 打开文件流->解封装
+processor 基本信息的初始化（比如流的index、上下文之类的）、解码、重编码
+    * videoProcessor 重编码
+    * audioProcessor 重采样
+main 渲染图片和音画同步
 
-读取文件流 -> avPacket
-
-
-### 解码
-
-avPacket -> avFrame
-
-### 重编码和重采样
-
-画面的图像格式重编码
-音频的格式重采样
+### main
 
 #### 画面播放
 
@@ -38,7 +30,8 @@ avPacket -> avFrame
 和音频avframe的时间戳
 每次播放的时候，比较视频时间戳和音频的时间戳，如果视频的时间戳小了，则加快速度播放，反之减低帧率播放
 
-#### 主要线程列表
+
+## 主要线程列表
 
 * 主线程：等待sdl事件，绘制图像，播放声音（？）
 * 线程1：read_frame 获取 avPacket

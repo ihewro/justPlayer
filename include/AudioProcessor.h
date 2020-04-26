@@ -49,20 +49,18 @@ extern "C"
 using std::cout;
 using std::endl;
 
-class AudioProcessor: Processor {
+class AudioProcessor: public Processor {
 
     int					audioIndex;
     AVCodec				*decodeAudio;
-    AVCodecContext		*decodeAudioContext;
+    struct AVCodecContext		*decodeAudioContext;
     AVFormatContext		*a_inputContext;
     AVStream			*inputAudioStream;
     AVCodecID			m_audio_codec_id;
     bool				stopFlag;
 
 public:
-
-    void avFrameEncode() override;
-
+    void avFrameEncode(AVFrame *inputFrame) override;
 };
 
 
