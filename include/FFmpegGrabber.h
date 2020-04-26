@@ -65,7 +65,6 @@ public:
     AudioProcessor *audioProcessor;
     //视频流处理
     VideoProcessor *videoProcessor;
-    int frameRate = 30;//视频的帧率
 
 
     bool stopFlag = false;//文件读取结束标志，或者文件读取出错

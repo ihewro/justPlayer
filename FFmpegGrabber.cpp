@@ -65,7 +65,9 @@ void FFmpegGrabber::startGrab() {
 
         Processor::releasePAndF(inputPkt,inputFrame);
 
-//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
+        //时间问题，就这样了
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     }
 
@@ -74,12 +76,12 @@ void FFmpegGrabber::startGrab() {
 
 
 void FFmpegGrabber::close() {
-    if (videoProcessor->decodeVideoContext) {
-        avcodec_close(videoProcessor->decodeVideoContext);
-        avcodec_free_context(&videoProcessor->decodeVideoContext);
+    if (videoProcessor->decodeContext) {
+        avcodec_close(videoProcessor->decodeContext);
+        avcodec_free_context(&videoProcessor->decodeContext);
     }
 
-    sws_freeContext(videoProcessor->video_convert_ctx);
+    sws_freeContext(videoProcessor->convert_ctx);
 
     if (v_inputContext) {
         avformat_close_input(&v_inputContext);
@@ -148,9 +150,9 @@ bool FFmpegGrabber::openInput() {
 
 
     if (videoProcessor->inputStream != nullptr && videoProcessor->inputStream->r_frame_rate.den > 0) {
-        frameRate = videoProcessor->inputStream->r_frame_rate.num / videoProcessor->inputStream->r_frame_rate.den;
+        videoProcessor->frameRate = videoProcessor->inputStream->r_frame_rate.num / videoProcessor->inputStream->r_frame_rate.den;
     } else if (videoProcessor->inputStream != nullptr && videoProcessor->inputStream->r_frame_rate.den > 0) {
-        frameRate = videoProcessor->inputStream->r_frame_rate.num / videoProcessor->inputStream->r_frame_rate.den;
+        videoProcessor->frameRate = videoProcessor->inputStream->r_frame_rate.num / videoProcessor->inputStream->r_frame_rate.den;
     }
 
     av_dump_format(v_inputContext, 0, this->filePath.c_str(), 0);
@@ -177,21 +179,21 @@ bool FFmpegGrabber::openCodec() {
         flag = false;
         goto __END;
     }
-    videoProcessor->decodeVideoContext = avcodec_alloc_context3(decodeVideo);
-    if (!videoProcessor->decodeVideoContext) {
+    videoProcessor->decodeContext = avcodec_alloc_context3(decodeVideo);
+    if (!videoProcessor->decodeContext) {
         av_log(NULL, AV_LOG_INFO, "视频输入流解码器上下文分配内存失败");
         flag = false;
         goto __END;
     }
 
-    ret = avcodec_parameters_to_context(videoProcessor->decodeVideoContext, videoProcessor->inputStream->codecpar);
+    ret = avcodec_parameters_to_context(videoProcessor->decodeContext, videoProcessor->inputStream->codecpar);
     if (ret < 0) {
         av_log(NULL, AV_LOG_INFO, "拷贝视频输入流解码器上下文参数失败:");
         flag = false;
         goto __END;
     }
 //    decodeVideoContext->thread_count = 2;
-    ret = avcodec_open2(videoProcessor->decodeVideoContext, decodeVideo, NULL);
+    ret = avcodec_open2(videoProcessor->decodeContext, decodeVideo, NULL);
     if (ret < 0) {
         av_log(NULL, AV_LOG_INFO, "打开视频输入流解码器失败:%d", ret);
         flag = false;
@@ -200,35 +202,23 @@ bool FFmpegGrabber::openCodec() {
 
     videoProcessor->out_buffer = (uint8_t *) av_malloc(
             av_image_get_buffer_size(AV_PIX_FMT_YUV420P,
-                    videoProcessor->decodeVideoContext->width,
-                    videoProcessor->decodeVideoContext->height, 32) *
+                                     videoProcessor->decodeContext->width,
+                                     videoProcessor->decodeContext->height, 32) *
             sizeof(uint8_t));
     //重编码器
-    videoProcessor->video_convert_ctx = sws_getContext(
-            videoProcessor->decodeVideoContext->width,
-            videoProcessor->decodeVideoContext->height,
-            videoProcessor->decodeVideoContext->pix_fmt,
-            videoProcessor->decodeVideoContext->width,
-            videoProcessor->decodeVideoContext->height,
+    videoProcessor->convert_ctx = sws_getContext(
+            videoProcessor->decodeContext->width,
+            videoProcessor->decodeContext->height,
+            videoProcessor->decodeContext->pix_fmt,
+            videoProcessor->decodeContext->width,
+            videoProcessor->decodeContext->height,
             AV_PIX_FMT_YUV420P,
             SWS_BICUBIC, NULL, NULL, NULL);
 
-
-//    if (videoProcessor->decodeVideoContext != nullptr) {
-//        auto frame = videoProcessor->decodeVideoContext->framerate;
-//        double fr = frame.num && frame.den ? av_q2d(frame) : 0.0;
-//        cout << "帧率??" <<fr <<endl ;
-//        frameRate = (int)fr;
-//    } else {
-//        throw std::runtime_error("can not getFrameRate.");
-//    }
-
-
-
     __END:
     if (!flag) {
-        if (videoProcessor->decodeVideoContext) {
-            avcodec_free_context(&videoProcessor->decodeVideoContext);
+        if (videoProcessor->decodeContext) {
+            avcodec_free_context(&videoProcessor->decodeContext);
         }
         av_log(NULL, AV_LOG_INFO, "初始化编码器失败");
     }
@@ -250,9 +240,7 @@ FFmpegGrabber::FFmpegGrabber(const string &filePath) {
     this->filePath = filePath;
 
     v_inputContext = nullptr;
-    frameRate = 0;
     stopFlag = false;
-
     this->v_inputContext = avformat_alloc_context();
 
     audioProcessor = new AudioProcessor();

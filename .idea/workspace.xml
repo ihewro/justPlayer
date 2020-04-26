@@ -13,12 +13,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e4a588b1-cb05-4309-9a1b-28c137fd1ac9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AudioProcessor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AudioProcessor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FFmpegGrabber.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/FFmpegGrabber.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Processor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VideoProcessor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/VideoProcessor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AudioProcessor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/AudioProcessor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/FFmpegGrabber.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/FFmpegGrabber.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Processor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Processor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/VideoProcessor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/VideoProcessor.h" afterDir="false" />
@@ -80,7 +77,7 @@
       <workItem from="1587541740941" duration="411000" />
       <workItem from="1587651358896" duration="6117000" />
       <workItem from="1587711402640" duration="823000" />
-      <workItem from="1587891884664" duration="7661000" />
+      <workItem from="1587891884664" duration="8481000" />
     </task>
     <servers />
   </component>
@@ -92,36 +89,36 @@
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state x="607" y="237" key="#com.intellij.ide.util.MemberChooser/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587896724226" />
-    <state width="1567" height="325" key="GridCell.Tab.0.bottom" timestamp="1587913093664">
+    <state width="1567" height="382" key="GridCell.Tab.0.bottom" timestamp="1587913959390">
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128358" />
     <state width="1638" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920119" />
-    <state width="1567" height="325" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913093664" />
+    <state width="1567" height="382" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913959390" />
     <state width="1638" height="334" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111063" />
     <state width="1567" height="325" key="GridCell.Tab.0.bottom/0.1050.1680.1050/0.23.1612.1027@0.23.1612.1027" timestamp="1587912093470" />
-    <state width="1567" height="325" key="GridCell.Tab.0.center" timestamp="1587913093663">
+    <state width="1567" height="382" key="GridCell.Tab.0.center" timestamp="1587913959389">
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128357" />
     <state width="1638" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920118" />
-    <state width="1567" height="325" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913093663" />
+    <state width="1567" height="382" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913959389" />
     <state width="1638" height="334" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111062" />
     <state width="1567" height="325" key="GridCell.Tab.0.center/0.1050.1680.1050/0.23.1612.1027@0.23.1612.1027" timestamp="1587912093469" />
-    <state width="1567" height="325" key="GridCell.Tab.0.left" timestamp="1587913093662">
+    <state width="1567" height="382" key="GridCell.Tab.0.left" timestamp="1587913959388">
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128356" />
     <state width="1638" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920118" />
-    <state width="1567" height="325" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913093662" />
+    <state width="1567" height="382" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913959388" />
     <state width="1638" height="334" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111061" />
     <state width="1567" height="325" key="GridCell.Tab.0.left/0.1050.1680.1050/0.23.1612.1027@0.23.1612.1027" timestamp="1587912093468" />
-    <state width="1567" height="325" key="GridCell.Tab.0.right" timestamp="1587913093663">
+    <state width="1567" height="382" key="GridCell.Tab.0.right" timestamp="1587913959390">
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state width="1564" height="335" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587311128357" />
     <state width="1638" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587395920119" />
-    <state width="1567" height="325" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913093663" />
+    <state width="1567" height="382" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913959390" />
     <state width="1638" height="334" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383111063" />
     <state width="1567" height="325" key="GridCell.Tab.0.right/0.1050.1680.1050/0.23.1612.1027@0.23.1612.1027" timestamp="1587912093469" />
     <state width="1564" height="336" key="GridCell.Tab.1.bottom" timestamp="1587311990598">
@@ -148,12 +145,12 @@
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
     <state x="341" y="175" key="SettingsEditor/0.1050.1680.945/0.23.1680.1027@0.23.1680.1027" timestamp="1587296786071" />
-    <state x="477" y="293" width="655" height="535" key="find.popup" timestamp="1587913004452">
+    <state x="477" y="293" width="655" height="535" key="find.popup" timestamp="1587913538657">
       <screen x="0" y="23" width="1609" height="1027" />
     </state>
     <state x="498" y="1326" width="683" height="546" key="find.popup/0.1050.1680.1050/0.23.1606.1027@0.1050.1680.1050" timestamp="1587310539634" />
     <state x="498" y="1326" width="683" height="546" key="find.popup/0.1050.1680.1050/0.23.1609.1027@0.1050.1680.1050" timestamp="1587385397963" />
-    <state x="477" y="293" width="655" height="535" key="find.popup/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913004452" />
+    <state x="477" y="293" width="655" height="535" key="find.popup/0.1050.1680.1050/0.23.1609.1027@0.23.1609.1027" timestamp="1587913538657" />
     <state x="498" y="1326" width="683" height="546" key="find.popup/0.1050.1680.1050/0.23.1612.1027@0.1050.1680.1050" timestamp="1587383104616" />
     <state x="478" y="293" width="656" height="535" key="find.popup/0.1050.1680.1050/0.23.1612.1027@0.23.1612.1027" timestamp="1587912078075" />
     <state x="498" y="293" width="683" height="486" key="find.popup/0.1050.1680.945/0.23.1680.1027@0.23.1680.1027" timestamp="1587288072381" />

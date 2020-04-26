@@ -35,10 +35,10 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
     //播放视频
     SDL_Window* screen;
 
-    cout << "width" << videoGrabber-> videoProcessor->decodeVideoContext->width<< endl;
-    cout << "height" << videoGrabber-> videoProcessor-> decodeVideoContext->height<< endl;
-    int width = videoGrabber->videoProcessor-> decodeVideoContext->width;
-    int height = videoGrabber-> videoProcessor->decodeVideoContext->height;
+    cout << "width" << videoGrabber-> videoProcessor->decodeContext->width << endl;
+    cout << "height" << videoGrabber-> videoProcessor-> decodeContext->height << endl;
+    int width = videoGrabber->videoProcessor-> decodeContext->width;
+    int height = videoGrabber-> videoProcessor->decodeContext->height;
     // SDL 2.0 Support for multiple windows
     screen = SDL_CreateWindow("justPlayer", SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, width, height,
@@ -59,9 +59,9 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
 
     SDL_Event event;
 
-    cout << "帧率" << videoGrabber->frameRate << endl;
+    cout << "帧率" << videoGrabber->videoProcessor->frameRate << endl;
     //定时器刷新图片的定时器
-    std::thread refreshThread{picRefresher, (int)(1000 / videoGrabber->frameRate), std::ref(videoGrabber->stopFlag)};
+    std::thread refreshThread{picRefresher, (int)(1000 / videoGrabber->videoProcessor->frameRate), std::ref(videoGrabber->stopFlag)};
 
     while (true){
         //等待sdl 事件

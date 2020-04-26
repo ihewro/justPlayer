@@ -14,7 +14,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
 
     int flag = false;
 
-    int ret = avcodec_send_packet(decodeVideoContext, inputPkt);
+    int ret = avcodec_send_packet(decodeContext, inputPkt);
 
     if (ret == 0) {
 //            av_packet_free(&targetPkt);
@@ -40,7 +40,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
     }
 
 
-    ret = avcodec_receive_frame(decodeVideoContext, inputFrame);
+    ret = avcodec_receive_frame(decodeContext, inputFrame);
 
     if (ret == 0 || ret == AVERROR(EAGAIN)) {
         if (ret == AVERROR(EAGAIN)) {
@@ -66,8 +66,6 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
 
         av_log(NULL, AV_LOG_INFO, "avcodec_receive_frame fail:%d", ret);
     }
-
-//    Processor::releasePAndF(inputPkt,inputFrame);
 
     return flag;
 
