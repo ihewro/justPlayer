@@ -17,7 +17,6 @@ void AudioProcessor::avFrameEncode(AVFrame *frame) {
     uint8_t* dataBuffer = nullptr;
     int dataBufferSize = allocBuffer(frame->nb_samples, &dataBuffer);
 
-    cout << "dataBufferSize" << dataBufferSize << endl;
 
     //2. 重采样
     outSamples = swr_convert(convert_ctx, &dataBuffer, dataBufferSize,
@@ -39,7 +38,22 @@ void AudioProcessor::avFrameEncode(AVFrame *frame) {
 //        } else {
 //            av_frame_free(&frameRGB);
 //        }
-        outBufferVec.push_back(dataBuffer);
+        if (dataBuffer== nullptr){
+            cout << "dataBuffer err" <<endl;
+        }
+
+//        cout << "dataBuffer push back" <<endl;
+
+        outBufferVec->push_back(dataBuffer);
+
+//        if (outBufferVec!= nullptr && outBufferVec->empty()) {
+//            cout << "dataBuffer push back" <<endl;
+//            outBufferVec->push_back(dataBuffer);
+//        } else {
+//            av_freep(&dataBuffer);
+//        }
+
+
 
     }
 
@@ -53,30 +67,48 @@ bool AudioProcessor::setCovertCtx() {
     if (swr_init(convert_ctx)) {
         throw std::runtime_error("swr_init error.");
     }
+
+//    std::vector<uint8_t*>	Vec;
+//    outBufferVec = &Vec;
+//    std::vector<int>	test;
+    std::vector<int> ilist1;
+//    cout << "testVec.size" << Vec.size() << endl;
+//    cout << "testVec2.size" << outBufferVec->size() << endl;
+    test = "|||233";
     return true;
 }
 
-void AudioProcessor::writeAudioData(unsigned char *stream, int len) {
+void AudioProcessor::writeAudioData(uint8_t* stream, int len) {
+//    cout << "writeAudioData" << endl;
+//    cout << "test sdl2" << test << endl;
+
     static uint8_t* silenceBuff = nullptr;
     if (silenceBuff == nullptr) {
         silenceBuff = (uint8_t*)av_malloc(sizeof(uint8_t) * len);
         std::memset(silenceBuff, 0, len);
     }
 
-    if (!outBufferVec.empty()) {
-        //向流中写入数据
-        currentTimestamp.store(nextFrameTimestamp.load());
-        auto outBuffer = outBufferVec.back();
+    if (outBufferVec!= nullptr){
+//        cout << "outBufferVec.size" <<std::to_string(outBufferVec->size()) << endl;
+        if (!outBufferVec->empty()) {
+            //向流中写入数据
+//        currentTimestamp.store(nextFrameTimestamp.load());
+            uint8_t* outBuffer = outBufferVec->back();
 //        if (outDataSize != len) {
 //            cout << "WARNING: outDataSize[" << outDataSize << "] != len[" << len << "]" << endl;
 //        }
-        std::memcpy(stream, outBuffer, outDataSize);
+            std::memcpy(stream, outBuffer, outDataSize);
 //        isNextDataReady.store(false);
-    } else {
-        // if list is empty, silent will be written.
-        cout << "WARNING: writeAudioData, audio data not ready." << endl;
-        std::memcpy(stream, silenceBuff, len);
+        } else {
+            // if list is empty, silent will be written.
+            cout << "WARNING: writeAudioData, audio data not ready." << endl;
+            std::memcpy(stream, silenceBuff, len);
+        }
+    }else{
+
+//        cout << "outBufferVec.size2" <<std::to_string(outBufferVec->size()) << endl;
     }
+
 }
 
 int AudioProcessor::allocBuffer(int inputSamples, uint8_t **dataBuffer) {
@@ -105,19 +137,19 @@ int AudioProcessor::allocBuffer(int inputSamples, uint8_t **dataBuffer) {
             bytePerOutSample = 2;
             break;
     }
-    cout << "inputSamples" << inputSamples << endl;
-    cout << "out.sampleRate" << out.sampleRate << endl;
-    cout << "in.sampleRate" << in.sampleRate << endl;
+//    cout << "inputSamples" << inputSamples << endl;
+//    cout << "out.sampleRate" << out.sampleRate << endl;
+//    cout << "in.sampleRate" << in.sampleRate << endl;
 
     int guessOutSamplesPerChannel =
             av_rescale_rnd(inputSamples, out.sampleRate, in.sampleRate, AV_ROUND_UP);
 
-    cout << "bytePerOutSample" << bytePerOutSample << endl;
-    cout << "guessOutSamplesPerChannel" << guessOutSamplesPerChannel << endl;
+//    cout << "bytePerOutSample" << bytePerOutSample << endl;
+//    cout << "guessOutSamplesPerChannel" << guessOutSamplesPerChannel << endl;
     int guessOutSize = guessOutSamplesPerChannel * out.channels * bytePerOutSample;
 
-    std::cout << "GuessOutSamplesPerChannel: " << guessOutSamplesPerChannel << std::endl;
-    std::cout << "GuessOutSize: " << guessOutSize << std::endl;
+//    std::cout << "GuessOutSamplesPerChannel: " << guessOutSamplesPerChannel << std::endl;
+//    std::cout << "GuessOutSize: " << guessOutSize << std::endl;
 
     guessOutSize *= 1.2;  // just make sure.
 

@@ -20,7 +20,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
     if (ret == 0) {
 //            av_packet_free(&targetPkt);
 //            targetPkt = nullptr;
-        cout << "[video] avcodec_send_packet success." << endl;
+//        cout << "[video] avcodec_send_packet success." << endl;
     } else{//文件结束了
         stopFlag = true;
 
@@ -48,7 +48,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
             // need more packet.
             std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
         }else{
-            std::cout << "avcodec_receive_frame success." << std::endl;
+//            std::cout << "avcodec_receive_frame success." << std::endl;
             //解码成功
             flag = true;
         }
@@ -125,7 +125,7 @@ void Processor::readPacket(AVPacket *inputPkt, AVFrame *inputFrame) {
         Processor::releasePAndF(inputPkt,inputFrame);
         //todo:抛出一个运行时错误
     }else{
-        cout << "获取avPacket成功" << endl;
+//        cout << "获取avPacket成功" << endl;
     }
 
 
@@ -150,7 +150,7 @@ void Processor::close() {
 }
 
 void Processor::startGrab(bool &stopFlag) {
-    cout << "startGrab" << endl;
+//    cout << "startGrab" << endl;
     stopFlag = false;
     int ret;
     while (true) {

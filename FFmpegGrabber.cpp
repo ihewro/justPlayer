@@ -136,6 +136,9 @@ void FFmpegGrabber::setVector(vector<AVFrame *> *vec) {
     videoProcessor->frameVec = vec;
 }
 
+void FFmpegGrabber::setAudioVector(vector<uint8_t*> *vec) {
+    audioProcessor->outBufferVec = vec;
+}
 
 //构造函数
 FFmpegGrabber::FFmpegGrabber(const string &filePath) {
@@ -158,7 +161,7 @@ FFmpegGrabber::FFmpegGrabber(const string &filePath) {
 
 void FFmpegGrabber::startGrab() {
 
-    cout << "startGrab" << endl;
+//    cout << "startGrab" << endl;
     stopFlag = false;
     int ret;
     while (true) {
@@ -172,33 +175,31 @@ void FFmpegGrabber::startGrab() {
 
         readPacket(inputPkt,inputFrame);
 
-        cout << "----- single  begin" <<inputPkt->stream_index<<endl;
+//        cout << "----- single  begin" <<inputPkt->stream_index<<endl;
 
         //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
         //时间问题，就这样了
 //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
         if (inputPkt->stream_index == videoProcessor->index){
-//            cout << "视频帧" << endl;
-//            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
-//            if(flag){
-//                //重编码
-//                videoProcessor->avFrameEncode(inputFrame);
-//            }
+            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
+            if(flag){
+                //重编码
+                videoProcessor->avFrameEncode(inputFrame);
+            }
         }else if (inputPkt->stream_index == audioProcessor->index){
-            cout << "音频帧" << endl;
             bool flag = audioProcessor->avP2F(stopFlag, inputPkt, inputFrame);
             if(flag){
                 //重编码
                 audioProcessor->avFrameEncode(inputFrame);
             }
         }else{
-            cout << "???" << inputPkt->stream_index  << endl;
+//            cout << "???" << inputPkt->stream_index  << endl;
         }
 
         Processor::releasePAndF(inputPkt,inputFrame);
 
-        cout << "single  end ----" << endl;
+//        cout << "single  end ----" << endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 
@@ -217,7 +218,7 @@ void FFmpegGrabber::readPacket(AVPacket *inputPkt, AVFrame *inputFrame) {
         Processor::releasePAndF(inputPkt,inputFrame);
         throw std::runtime_error("读取视频图像失败");
     }else{
-        cout << "获取avPacket成功233" << endl;
+//        cout << "获取avPacket成功233" << endl;
     }
 
 }

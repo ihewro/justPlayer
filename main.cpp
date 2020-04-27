@@ -9,20 +9,42 @@ using std::endl;
 extern "C" {
 #include "SDL2/SDL.h"
 };
-
+void startSdlAudio(SDL_AudioDeviceID& audioDeviceID, AudioProcessor* aProcessor);
 void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex);
 void picRefresher(int timeInterval, bool& exitRefresh);
 
 int main() {
-    string filePath = "/Users/hewro/Downloads/产品介绍4.mp4";
+    string filePath = "/Users/hewro/Desktop/test.avi";
     std::cout << "Hello, World!" << std::endl;
     std::mutex			mtx{};//帧锁，避免frameVector出现线程冲突问题
     vector<AVFrame*>	frameVec{};//存储视频帧
+    vector<uint8_t*>	Vec;
     //启动视频抓取
     auto* videoGrabber = new FFmpegGrabber(filePath);
     videoGrabber->setMutex(&mtx);
     videoGrabber->setVector(&frameVec);
+
+    //todo 我在audioprocessor 内部初始化vector总是不行，不知道为什么。。。
+    videoGrabber->setAudioVector(&Vec);
     videoGrabber->start();
+
+
+    //sdl播放音频
+
+    SDL_setenv("SDL_AUDIO_ALSA_SET_BUFFER_SIZE", "1", 1);
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
+        string errMsg = "Could not initialize SDL -";
+        errMsg += SDL_GetError();
+        cout << errMsg << endl;
+        throw std::runtime_error(errMsg);
+    }
+    SDL_AudioDeviceID audioDeviceID;
+
+    std::thread startAudioThread(startSdlAudio, std::ref(audioDeviceID),
+                                 videoGrabber->audioProcessor);
+    startAudioThread.join();
+
 
     //播放视频
     playSdlVideo(videoGrabber, &mtx);
@@ -119,29 +141,30 @@ void picRefresher(int timeInterval, bool& exitRefresh) {
 
 
 void sdlAudioCallback(void* userdata, Uint8* stream, int len) {
+//    cout << "sdlAudioCallback" << endl;
     AudioProcessor* receiver = (AudioProcessor*)userdata;
+//    cout << "test sdl" << receiver->test << endl;
     receiver->writeAudioData(stream, len);
 }
 
 
 //播放声音
-void startSdlAudio(SDL_AudioDeviceID& audioDeviceID, AudioProcessor& aProcessor) {
+void startSdlAudio(SDL_AudioDeviceID& audioDeviceID, AudioProcessor* aProcessor) {
     //--------------------- GET SDL audio READY -------------------
 
     // audio specs containers
     SDL_AudioSpec wanted_specs;
     SDL_AudioSpec specs;
 
-    cout << "aProcessor.getSampleFormat() = " << aProcessor.in.format << endl;
-    cout << "aProcessor.getSampleRate() = " << aProcessor.out.sampleRate << endl;
-    cout << "aProcessor.getChannels() = " << aProcessor.out.channels << endl;
+    cout << "aProcessor->getSampleFormat() = " << aProcessor->in.format << endl;
+    cout << "aProcessor->getSampleRate() = " << aProcessor->out.sampleRate << endl;
+    cout << "aProcessor->getChannels() = " << aProcessor->out.channels << endl;
     cout << "++" << endl;
 
     int samples = -1;
-    //循环播放声音
     while (true) {
         cout << "getting audio samples." << endl;
-        samples = aProcessor.outSamples;
+        samples = aProcessor->outSamples;
         if (samples <= 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         } else {
@@ -151,12 +174,12 @@ void startSdlAudio(SDL_AudioDeviceID& audioDeviceID, AudioProcessor& aProcessor)
     }
 
     // set audio settings from codec info
-    wanted_specs.freq = aProcessor.out.sampleRate;
+    wanted_specs.freq = aProcessor->out.sampleRate;
     wanted_specs.format = AUDIO_S16SYS;
-    wanted_specs.channels = aProcessor.out.channels;
+    wanted_specs.channels = aProcessor->out.channels;
     wanted_specs.samples = samples;
     wanted_specs.callback = sdlAudioCallback;
-    wanted_specs.userdata = &aProcessor;
+    wanted_specs.userdata = aProcessor;
 
     // open audio device
     audioDeviceID = SDL_OpenAudioDevice(nullptr, 0, &wanted_specs, &specs, 0);

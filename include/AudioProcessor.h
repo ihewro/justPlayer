@@ -85,7 +85,7 @@ public:
 
     SwrContext *convert_ctx;//重编码器
     //todo 考虑使用智能指针
-    std::vector<uint8_t* > outBufferVec{};//存储等待sdl回调函数调用的数据
+    std::vector<uint8_t* > *outBufferVec = nullptr;//存储等待sdl回调函数调用的数据
     AudioInfo in;//输入音频流的元信息
     AudioInfo out;//重采样后的音频流的元信息
 
@@ -94,12 +94,13 @@ public:
     int outSamples = -1;//number of samples output per channel, negative value on error
 
 
+    string test = "";
     bool setCovertCtx() override;
     void avFrameEncode(AVFrame *inputFrame) override;
     bool setDecodeCtx() override;
 
 
-    void writeAudioData(unsigned char *string, int i);//sdl 回调函数，向sdl流中写入数据
+    void writeAudioData(uint8_t* string, int i);//sdl 回调函数，向sdl流中写入数据
 
 
     //确定dataBuffer 的大小并分配空间，以便转换的时候将 avframe里面的data转到buffer中

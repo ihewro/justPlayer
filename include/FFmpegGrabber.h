@@ -78,6 +78,7 @@ public:
     void setMutex(mutex *pMutex);
     void setVector(vector<AVFrame *> *vec);
 
+    void setAudioVector(vector<uint8_t *> *vec);
 };
 
 
