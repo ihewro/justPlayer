@@ -24,71 +24,18 @@ bool FFmpegGrabber::start() {
         return false;
     }
 
-    std::thread videoThread{&FFmpegGrabber::startGrab, this};
+    std::thread videoThread{&VideoProcessor::startGrab, videoProcessor, std::ref(stopFlag)};
+//    std::thread audioThread{&AudioProcessor::startGrab, this};
     videoThread.detach();
+//    audioThread.detach();
 
     return true;
 }
 
-void FFmpegGrabber::startGrab() {
-    cout << "startGrab" << endl;
-    stopFlag = false;
-    int ret;
-    while (true) {
-        if (stopFlag) {
-            close();
-            break;
-        }
-        AVPacket *inputPkt = av_packet_alloc();
-        AVFrame *inputFrame = av_frame_alloc();
-        av_init_packet(inputPkt);
-//        AVPacket* inputPkt = (AVPacket*)av_malloc(sizeof(AVPacket));
-        ret = av_read_frame(v_inputContext, inputPkt);
-        if (ret < 0) {
-            av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
-            Processor::releasePAndF(inputPkt,inputFrame);
-            //todo:抛出一个运行时错误
-        }else{
-            cout << "获取avPacket成功" << endl;
-        }
-
-        if (inputPkt->stream_index == videoProcessor->index){
-            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
-            if(flag){
-                //重编码
-                videoProcessor->avFrameEncode(inputFrame);
-            }
-        }else{
-            //音频的avPacket处理
-
-        }
-
-        Processor::releasePAndF(inputPkt,inputFrame);
-
-        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
-        //时间问题，就这样了
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-    }
-
-}
 
 
 
-void FFmpegGrabber::close() {
-    if (videoProcessor->decodeContext) {
-        avcodec_close(videoProcessor->decodeContext);
-        avcodec_free_context(&videoProcessor->decodeContext);
-    }
 
-    sws_freeContext(videoProcessor->convert_ctx);
-
-    if (v_inputContext) {
-        avformat_close_input(&v_inputContext);
-        //avformat_free_context(v_inputContext);
-    }
-
-}
 
 
 bool FFmpegGrabber::openInput() {
@@ -191,7 +138,10 @@ FFmpegGrabber::FFmpegGrabber(const string &filePath) {
     this->v_inputContext = avformat_alloc_context();
 
     audioProcessor = new AudioProcessor();
+    audioProcessor->v_inputContext = v_inputContext;
+
     videoProcessor = new VideoProcessor();
+    videoProcessor->v_inputContext = v_inputContext;
 
 
     std::cout <<  "file: " <<filePath << std::endl;
