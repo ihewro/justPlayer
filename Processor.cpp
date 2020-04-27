@@ -50,8 +50,8 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
         }else{
             std::cout << "avcodec_receive_frame success." << std::endl;
             //解码成功
+            flag = true;
         }
-        flag = true;
 
     } else {
         stopFlag = true;

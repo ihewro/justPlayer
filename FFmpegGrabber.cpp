@@ -24,9 +24,11 @@ bool FFmpegGrabber::start() {
         return false;
     }
 
-    std::thread videoThread{&VideoProcessor::startGrab, videoProcessor, std::ref(stopFlag)};
-//    std::thread audioThread{&AudioProcessor::startGrab, this};
-    videoThread.detach();
+    std::thread thread{&FFmpegGrabber::startGrab, this};
+    thread.detach();
+//    std::thread videoThread{&VideoProcessor::startGrab, videoProcessor, std::ref(stopFlag)};
+//    std::thread audioThread{&AudioProcessor::startGrab, audioProcessor, std::ref(stopFlag)};
+//    videoThread.detach();
 //    audioThread.detach();
 
     return true;
@@ -110,7 +112,14 @@ bool FFmpegGrabber::openInput() {
 bool FFmpegGrabber::openCodec() {
     bool flag = videoProcessor->setDecodeCtx();
     videoProcessor->setCovertCtx();
-    if (!flag) {
+
+
+    bool flag2 = audioProcessor->setDecodeCtx();
+    audioProcessor->setCovertCtx();
+
+
+
+    if (!flag && !flag2) {
         if (videoProcessor->decodeContext) {
             avcodec_free_context(&videoProcessor->decodeContext);
         }
@@ -145,4 +154,85 @@ FFmpegGrabber::FFmpegGrabber(const string &filePath) {
 
 
     std::cout <<  "file: " <<filePath << std::endl;
+}
+
+void FFmpegGrabber::startGrab() {
+
+    cout << "startGrab" << endl;
+    stopFlag = false;
+    int ret;
+    while (true) {
+        if (stopFlag) {
+            close();
+            break;
+        }
+        AVPacket *inputPkt = av_packet_alloc();
+        AVFrame *inputFrame = av_frame_alloc();
+
+
+        readPacket(inputPkt,inputFrame);
+
+        cout << "----- single  begin" <<inputPkt->stream_index<<endl;
+
+        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
+        //时间问题，就这样了
+//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        if (inputPkt->stream_index == videoProcessor->index){
+//            cout << "视频帧" << endl;
+//            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
+//            if(flag){
+//                //重编码
+//                videoProcessor->avFrameEncode(inputFrame);
+//            }
+        }else if (inputPkt->stream_index == audioProcessor->index){
+            cout << "音频帧" << endl;
+            bool flag = audioProcessor->avP2F(stopFlag, inputPkt, inputFrame);
+            if(flag){
+                //重编码
+                audioProcessor->avFrameEncode(inputFrame);
+            }
+        }else{
+            cout << "???" << inputPkt->stream_index  << endl;
+        }
+
+        Processor::releasePAndF(inputPkt,inputFrame);
+
+        cout << "single  end ----" << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+
+    }
+
+
+
+}
+
+void FFmpegGrabber::readPacket(AVPacket *inputPkt, AVFrame *inputFrame) {
+    av_init_packet(inputPkt);
+//        AVPacket* inputPkt = (AVPacket*)av_malloc(sizeof(AVPacket));
+    int ret = av_read_frame(v_inputContext, inputPkt);
+    if (ret < 0) {
+        av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
+        Processor::releasePAndF(inputPkt,inputFrame);
+        throw std::runtime_error("读取视频图像失败");
+    }else{
+        cout << "获取avPacket成功233" << endl;
+    }
+
+}
+
+void FFmpegGrabber::close() {
+//    if (decodeContext) {
+//        avcodec_close(decodeContext);
+//        avcodec_free_context(&decodeContext);
+//    }
+
+    //todo:写到析构函数里面
+//    sws_freeContext(convert_ctx);
+
+    if (v_inputContext) {
+        avformat_close_input(&v_inputContext);
+        //avformat_free_context(v_inputContext);
+    }
 }

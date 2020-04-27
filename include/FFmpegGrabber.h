@@ -58,6 +58,11 @@ public:
 
     bool start();//启动
     void startGrab();//循环解封装
+
+    //解封装
+    void readPacket(AVPacket *inputPkt, AVFrame *inputFrame);
+
+
     void close();//关闭时候一些释放操作
     AVFormatContext		*v_inputContext;//打开文件的上下文
 

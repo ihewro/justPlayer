@@ -13,10 +13,11 @@
 
 
 void AudioProcessor::avFrameEncode(AVFrame *frame) {
-    uint8_t* dataBuffer = nullptr;
     //1. 分配outBuffer空间
+    uint8_t* dataBuffer = nullptr;
     int dataBufferSize = allocBuffer(frame->nb_samples, &dataBuffer);
 
+    cout << "dataBufferSize" << dataBufferSize << endl;
 
     //2. 重采样
     outSamples = swr_convert(convert_ctx, &dataBuffer, dataBufferSize,
@@ -38,7 +39,8 @@ void AudioProcessor::avFrameEncode(AVFrame *frame) {
 //        } else {
 //            av_frame_free(&frameRGB);
 //        }
-        outBufferVec->push_back(dataBuffer);
+        outBufferVec.push_back(dataBuffer);
+
     }
 
 
@@ -61,10 +63,10 @@ void AudioProcessor::writeAudioData(unsigned char *stream, int len) {
         std::memset(silenceBuff, 0, len);
     }
 
-    if (!outBufferVec->empty()) {
+    if (!outBufferVec.empty()) {
         //向流中写入数据
         currentTimestamp.store(nextFrameTimestamp.load());
-        auto outBuffer = outBufferVec->back();
+        auto outBuffer = outBufferVec.back();
 //        if (outDataSize != len) {
 //            cout << "WARNING: outDataSize[" << outDataSize << "] != len[" << len << "]" << endl;
 //        }
@@ -103,9 +105,15 @@ int AudioProcessor::allocBuffer(int inputSamples, uint8_t **dataBuffer) {
             bytePerOutSample = 2;
             break;
     }
+    cout << "inputSamples" << inputSamples << endl;
+    cout << "out.sampleRate" << out.sampleRate << endl;
+    cout << "in.sampleRate" << in.sampleRate << endl;
 
     int guessOutSamplesPerChannel =
             av_rescale_rnd(inputSamples, out.sampleRate, in.sampleRate, AV_ROUND_UP);
+
+    cout << "bytePerOutSample" << bytePerOutSample << endl;
+    cout << "guessOutSamplesPerChannel" << guessOutSamplesPerChannel << endl;
     int guessOutSize = guessOutSamplesPerChannel * out.channels * bytePerOutSample;
 
     std::cout << "GuessOutSamplesPerChannel: " << guessOutSamplesPerChannel << std::endl;
@@ -113,7 +121,7 @@ int AudioProcessor::allocBuffer(int inputSamples, uint8_t **dataBuffer) {
 
     guessOutSize *= 1.2;  // just make sure.
 
-    *dataBuffer = (uint8_t*)av_malloc(sizeof(uint8_t) * guessOutSize);
+    *dataBuffer = (unsigned char *)av_malloc(sizeof(uint8_t) * guessOutSize);
 
     // av_samples_alloc(&outData, NULL, outChannels, guessOutSamplesPerChannel,
     // AV_SAMPLE_FMT_S16, 0);

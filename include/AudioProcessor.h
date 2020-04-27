@@ -85,11 +85,11 @@ public:
 
     SwrContext *convert_ctx;//重编码器
     //todo 考虑使用智能指针
-    std::vector<uint8_t* > *outBufferVec;//存储等待sdl回调函数调用的数据
+    std::vector<uint8_t* > outBufferVec{};//存储等待sdl回调函数调用的数据
     AudioInfo in;//输入音频流的元信息
     AudioInfo out;//重采样后的音频流的元信息
 
-    int outDataSize = -1; //重采样后数据的大小
+    int outDataSize = -1; //重采样后数据的大小，dataBufferSize 是avframe帧的数据大小
     //每一个声道的样本数
     int outSamples = -1;//number of samples output per channel, negative value on error
 
