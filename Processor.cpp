@@ -149,22 +149,26 @@ void Processor::close() {
 }
 
 void Processor::startGrab(bool &stopFlag) {
-//    cout << "startGrab" << endl;
     stopFlag = false;
-    int ret;
     while (!stopFlag) {
-
         AVFrame *inputFrame = av_frame_alloc();
 
-        if (!packetList.empty()){
+        if (!packetList.empty()) {
+            std::lock_guard<std::mutex> lg(pktListMutex);
             auto pkt = std::move(packetList.front());
-            AVPacket*  inputPkt = pkt.release();
+            AVPacket *inputPkt = pkt.release();
             if (inputPkt == nullptr) {
             } else {
-                packetList.pop_front();
-                cout << "2222packetList.size() " << packetList.size()<< endl;
 
-                cout << index << "获得avPacket" << endl;
+                try {
+                    packetList.pop_front();
+                    // 保护代码
+                } catch (std::exception e1) {
+                    // catch 块
+                    cout << "packetList.pop_front() error" << endl;
+                }
+
+
                 bool flag = avP2F(stopFlag, inputPkt, inputFrame);
                 if (flag) {
                     //重编码
@@ -173,9 +177,10 @@ void Processor::startGrab(bool &stopFlag) {
 
                 Processor::releasePAndF(inputPkt, inputFrame);
 
-                //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
-                //时间问题，就这样了
-                std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                if (true){
+                    //不加这一行会出现加速的问题，不知道什么原因
+                    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                }
             }
 
         }
@@ -189,6 +194,7 @@ uint64_t Processor::getPts() {
 }
 
 bool Processor::needPacket() {
-    cout << "packetList.size() " << packetList.size()<< endl;
+    std::lock_guard<std::mutex> lg(pktListMutex);
+//    cout << "packetList.size() " << packetList.size()<< endl;
     return packetList.size() < PKT_WAITING_SIZE;
 }

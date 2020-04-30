@@ -48,6 +48,7 @@ using std::endl;
 using std::string;
 using std::unique_ptr;
 using std::list;
+using std::mutex;
 
 
 class Processor {
@@ -56,6 +57,7 @@ public:
 
     int PKT_WAITING_SIZE = 3;//packetList的容量大小
 
+    mutex pktListMutex{}; //
 
     AVFormatContext *v_inputContext;//文件打开上下文
 

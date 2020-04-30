@@ -14,7 +14,7 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex);
 void picRefresher(int timeInterval, bool& exitRefresh);
 
 int main() {
-    string filePath = "/Users/hewro/Downloads/产品介绍4.mp4";
+    string filePath = "/Users/hewro/Downloads/114918203-1-80.flv";
     std::cout << "Hello, World!" << std::endl;
     std::mutex			mtx{};//帧锁，避免frameVector出现线程冲突问题
     vector<AVFrame*>	frameVec{};//存储视频帧
@@ -93,7 +93,7 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
             break;
         }
         if (!videoGrabber->videoProcessor->frameVec->empty()){
-            cout << "not empty" << endl;
+//            cout << "not empty" << endl;
             AVFrame* frame = videoGrabber->videoProcessor->frameVec->back();
 //            cout << "size3:" << videoGrabber->videoProcessor->frameVec->size() << endl;
             if (frame != nullptr) {
