@@ -24,12 +24,16 @@ bool FFmpegGrabber::start() {
         return false;
     }
 
-    std::thread thread{&FFmpegGrabber::startGrab, this};
-    thread.detach();
-//    std::thread videoThread{&VideoProcessor::startGrab, videoProcessor, std::ref(stopFlag)};
-//    std::thread audioThread{&AudioProcessor::startGrab, audioProcessor, std::ref(stopFlag)};
-//    videoThread.detach();
-//    audioThread.detach();
+    std::thread readPacketThread{&FFmpegGrabber::readPacket, this};
+    readPacketThread.detach();
+//    std::thread thread{&FFmpegGrabber::startGrab, this};
+//    thread.detach();
+
+
+    std::thread videoThread{&VideoProcessor::startGrab, videoProcessor, std::ref(stopFlag)};
+    std::thread audioThread{&AudioProcessor::startGrab, audioProcessor, std::ref(stopFlag)};
+    videoThread.detach();
+    audioThread.detach();
 
     return true;
 }
@@ -169,56 +173,73 @@ void FFmpegGrabber::startGrab() {
             close();
             break;
         }
-        AVPacket *inputPkt = av_packet_alloc();
-        AVFrame *inputFrame = av_frame_alloc();
 
 
-        readPacket(inputPkt,inputFrame);
-
-//        cout << "----- single  begin" <<inputPkt->stream_index<<endl;
-
-        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
-        //时间问题，就这样了
+////        cout << "----- single  begin" <<inputPkt->stream_index<<endl;
+//
+//        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
+//        //时间问题，就这样了
+////        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//
+//        if (inputPkt->stream_index == videoProcessor->index){
+////            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
+////            if(flag){
+////                //重编码
+////                videoProcessor->avFrameEncode(inputFrame);
+////            }
+//        }else if (inputPkt->stream_index == audioProcessor->index){
+//            bool flag = audioProcessor->avP2F(stopFlag, inputPkt, inputFrame);
+//            if(flag){
+//                //重编码
+//                audioProcessor->avFrameEncode(inputFrame);
+//            }
+//        }else{
+////            cout << "???" << inputPkt->stream_index  << endl;
+//        }
+//
+//        Processor::releasePAndF(inputPkt,inputFrame);
+//
+////        cout << "single  end ----" << endl;
 //        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-        if (inputPkt->stream_index == videoProcessor->index){
-            bool flag = videoProcessor->avP2F(stopFlag, inputPkt, inputFrame);
-            if(flag){
-                //重编码
-                videoProcessor->avFrameEncode(inputFrame);
-            }
-        }else if (inputPkt->stream_index == audioProcessor->index){
-            bool flag = audioProcessor->avP2F(stopFlag, inputPkt, inputFrame);
-            if(flag){
-                //重编码
-                audioProcessor->avFrameEncode(inputFrame);
-            }
-        }else{
-//            cout << "???" << inputPkt->stream_index  << endl;
-        }
-
-        Processor::releasePAndF(inputPkt,inputFrame);
-
-//        cout << "single  end ----" << endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-
+//
+//
     }
 
 
 
 }
 
-void FFmpegGrabber::readPacket(AVPacket *inputPkt, AVFrame *inputFrame) {
-    av_init_packet(inputPkt);
+void FFmpegGrabber::readPacket() {
+
+    while (!stopFlag ){
+        if (audioProcessor->needPacket() || videoProcessor->needPacket()){
+            AVPacket *inputPkt = av_packet_alloc();
+            AVFrame *inputFrame = av_frame_alloc();
+
+            av_init_packet(inputPkt);
 //        AVPacket* inputPkt = (AVPacket*)av_malloc(sizeof(AVPacket));
-    int ret = av_read_frame(v_inputContext, inputPkt);
-    if (ret < 0) {
-        av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
-        Processor::releasePAndF(inputPkt,inputFrame);
-        throw std::runtime_error("读取视频图像失败");
-    }else{
+            int ret = av_read_frame(v_inputContext, inputPkt);
+            if (ret < 0) {
+                av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
+                Processor::releasePAndF(inputPkt,inputFrame);
+                throw std::runtime_error("读取视频图像失败");
+            }else{
 //        cout << "获取avPacket成功233" << endl;
+            }
+
+            //将avPacket存入相应的list中
+            if (inputPkt->stream_index == videoProcessor->index){
+                unique_ptr<AVPacket> uPacket(inputPkt);
+                videoProcessor->packetList.push_back(std::move(uPacket));
+
+            }else if (inputPkt->stream_index == audioProcessor->index){
+                unique_ptr<AVPacket> uPacket(inputPkt);
+                audioProcessor->packetList.push_back(std::move(uPacket));
+            }else{
+//            cout << "???" << inputPkt->stream_index  << endl;
+            }
+        }
+
     }
 
 }

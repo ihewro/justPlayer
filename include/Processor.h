@@ -13,6 +13,9 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+
+
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -40,17 +43,23 @@ extern "C"
  * avPacket -> avFrame
  */
 
- using std::cout;
- using std::endl;
- using std::string;
+using std::cout;
+using std::endl;
+using std::string;
+using std::unique_ptr;
+using std::list;
+
 
 class Processor {
 
 public:
 
-    AVFormatContext		*v_inputContext;//文件打开上下文
+    int PKT_WAITING_SIZE = 3;//packetList的容量大小
 
-    AVStream * inputStream;//流
+
+    AVFormatContext *v_inputContext;//文件打开上下文
+
+    AVStream *inputStream;//流
     int index = -1;//流序号
 
     AVCodecContext *decodeContext;//解码器
@@ -58,6 +67,11 @@ public:
 
     std::atomic<uint64_t> currentTimestamp{0};
     std::atomic<uint64_t> nextFrameTimestamp{0};
+
+
+    list<unique_ptr<AVPacket>> packetList{};
+
+
 
     //设置解码器
     virtual bool setDecodeCtx();
@@ -78,8 +92,10 @@ public:
     void startGrab(bool &stopFlag);
 
 
+    bool needPacket();
+
     //释放packet和frame
-    static void releasePAndF(AVPacket *inputPkt,AVFrame *inputFrame );
+    static void releasePAndF(AVPacket *inputPkt, AVFrame *inputFrame);
 
 
     //关闭解码器、编码器和文件流上下文

@@ -30,9 +30,12 @@ void VideoProcessor::avFrameEncode(AVFrame *inputFrame) {
             if (lock != nullptr && frameVec != nullptr) {
                             lock->lock();
                 if (frameVec->empty()) {
+                    cout << "frameVec push back" << endl;
                     frameVec->push_back(frameRGB);
                 } else {
+//                    cout << "size:" << frameVec->size()<<endl;
                     av_frame_free(&frameRGB);
+//                    cout << "size2:" << frameVec->size()<<endl;
                 }
                             lock->unlock();
             }

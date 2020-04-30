@@ -60,7 +60,7 @@ public:
     void startGrab();//循环解封装
 
     //解封装
-    void readPacket(AVPacket *inputPkt, AVFrame *inputFrame);
+    void readPacket();
 
 
     void close();//关闭时候一些释放操作

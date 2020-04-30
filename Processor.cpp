@@ -11,7 +11,7 @@
 #include <thread>
 #include "include/Processor.h"
 
-bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
+bool Processor::avP2F(bool &stopFlag, AVPacket *inputPkt, AVFrame *inputFrame) {
 
     int flag = false;
 
@@ -21,7 +21,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
 //            av_packet_free(&targetPkt);
 //            targetPkt = nullptr;
 //        cout << "[video] avcodec_send_packet success." << endl;
-    } else{//文件结束了
+    } else {//文件结束了
         stopFlag = true;
 
         if (ret == AVERROR(EAGAIN)) {
@@ -47,7 +47,7 @@ bool Processor::avP2F(bool &stopFlag,AVPacket *inputPkt,AVFrame *inputFrame) {
         if (ret == AVERROR(EAGAIN)) {
             // need more packet.
             std::cout << "[avcodec_receive_frame失败] need more packet." << std::endl;
-        }else{
+        } else {
 //            std::cout << "avcodec_receive_frame success." << std::endl;
             //解码成功
             flag = true;
@@ -92,17 +92,17 @@ bool Processor::setDecodeCtx() {
     if (!decodeVideo) {
         av_log(NULL, AV_LOG_INFO, "摄像头输入流解码器查找失败");
         flag = false;
-    }else{//2. 解码器上下文创建
+    } else {//2. 解码器上下文创建
         decodeContext = avcodec_alloc_context3(decodeVideo);
         if (!decodeContext) {
             av_log(NULL, AV_LOG_INFO, "视频输入流解码器上下文分配内存失败");
             flag = false;
-        }else{//3. 解码器参数复制
+        } else {//3. 解码器参数复制
             ret = avcodec_parameters_to_context(decodeContext, inputStream->codecpar);
             if (ret < 0) {
                 av_log(NULL, AV_LOG_INFO, "拷贝视频输入流解码器上下文参数失败:");
                 flag = false;
-            } else{//4. 打开解码器
+            } else {//4. 打开解码器
                 ret = avcodec_open2(decodeContext, decodeVideo, NULL);
                 if (ret < 0) {
                     av_log(NULL, AV_LOG_INFO, "打开视频输入流解码器失败:%d", ret);
@@ -122,15 +122,14 @@ void Processor::readPacket(AVPacket *inputPkt, AVFrame *inputFrame) {
     int ret = av_read_frame(v_inputContext, inputPkt);
     if (ret < 0) {
         av_log(NULL, AV_LOG_INFO, "读取视频图像失败:%d", ret);
-        Processor::releasePAndF(inputPkt,inputFrame);
+        Processor::releasePAndF(inputPkt, inputFrame);
         //todo:抛出一个运行时错误
-    }else{
+    } else {
 //        cout << "获取avPacket成功" << endl;
     }
 
 
 }
-
 
 
 void Processor::close() {
@@ -153,33 +152,43 @@ void Processor::startGrab(bool &stopFlag) {
 //    cout << "startGrab" << endl;
     stopFlag = false;
     int ret;
-    while (true) {
-        if (stopFlag) {
-            close();
-            break;
-        }
-        AVPacket *inputPkt = av_packet_alloc();
+    while (!stopFlag) {
+
         AVFrame *inputFrame = av_frame_alloc();
 
-        readPacket(inputPkt,inputFrame);
+        if (!packetList.empty()){
+            auto pkt = std::move(packetList.front());
+            AVPacket*  inputPkt = pkt.release();
+            if (inputPkt == nullptr) {
+            } else {
+                packetList.pop_front();
+                cout << "2222packetList.size() " << packetList.size()<< endl;
 
-        if (inputPkt->stream_index == index){
-            bool flag = avP2F(stopFlag, inputPkt, inputFrame);
-            if(flag){
-                //重编码
-                avFrameEncode(inputFrame);
+                cout << index << "获得avPacket" << endl;
+                bool flag = avP2F(stopFlag, inputPkt, inputFrame);
+                if (flag) {
+                    //重编码
+                    avFrameEncode(inputFrame);
+                }
+
+                Processor::releasePAndF(inputPkt, inputFrame);
+
+                //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
+                //时间问题，就这样了
+                std::this_thread::sleep_for(std::chrono::milliseconds(15));
             }
+
         }
-
-        Processor::releasePAndF(inputPkt,inputFrame);
-
-        //不加这一行会出现加速的问题，不知道什么原因，所以av_send av_receive 最好还是分成两个线程
-        //时间问题，就这样了
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
     }
+
+    close();
 }
 
 uint64_t Processor::getPts() {
     return currentTimestamp.load();
+}
+
+bool Processor::needPacket() {
+    cout << "packetList.size() " << packetList.size()<< endl;
+    return packetList.size() < PKT_WAITING_SIZE;
 }

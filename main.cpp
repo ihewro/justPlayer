@@ -14,7 +14,7 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex);
 void picRefresher(int timeInterval, bool& exitRefresh);
 
 int main() {
-    string filePath = "/Users/hewro/Desktop/test.avi";
+    string filePath = "/Users/hewro/Downloads/产品介绍4.mp4";
     std::cout << "Hello, World!" << std::endl;
     std::mutex			mtx{};//帧锁，避免frameVector出现线程冲突问题
     vector<AVFrame*>	frameVec{};//存储视频帧
@@ -95,6 +95,7 @@ void playSdlVideo(FFmpegGrabber* videoGrabber, mutex *pMutex){
         if (!videoGrabber->videoProcessor->frameVec->empty()){
             cout << "not empty" << endl;
             AVFrame* frame = videoGrabber->videoProcessor->frameVec->back();
+//            cout << "size3:" << videoGrabber->videoProcessor->frameVec->size() << endl;
             if (frame != nullptr) {
                 //显示画面
                 SDL_UpdateYUVTexture(sdlTexture,  // the texture to update

@@ -44,14 +44,14 @@ void AudioProcessor::avFrameEncode(AVFrame *frame) {
 
 //        cout << "dataBuffer push back" <<endl;
 
-        outBufferVec->push_back(dataBuffer);
+//        outBufferVec->push_back(dataBuffer);
 
-//        if (outBufferVec!= nullptr && outBufferVec->empty()) {
+        if (outBufferVec->empty()) {
 //            cout << "dataBuffer push back" <<endl;
-//            outBufferVec->push_back(dataBuffer);
-//        } else {
-//            av_freep(&dataBuffer);
-//        }
+            outBufferVec->push_back(dataBuffer);
+        } else {
+            av_freep(&dataBuffer);
+        }
 
 
 
@@ -98,6 +98,7 @@ void AudioProcessor::writeAudioData(uint8_t* stream, int len) {
 //            cout << "WARNING: outDataSize[" << outDataSize << "] != len[" << len << "]" << endl;
 //        }
             std::memcpy(stream, outBuffer, outDataSize);
+            outBufferVec->pop_back();
 //        isNextDataReady.store(false);
         } else {
             // if list is empty, silent will be written.
@@ -106,7 +107,6 @@ void AudioProcessor::writeAudioData(uint8_t* stream, int len) {
         }
     }else{
 
-//        cout << "outBufferVec.size2" <<std::to_string(outBufferVec->size()) << endl;
     }
 
 }
